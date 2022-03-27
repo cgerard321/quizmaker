@@ -1,23 +1,58 @@
 import logo from "./logo.svg";
 import "./App.css";
 import { useState } from "react";
+import {Box, Button, Container, Link, Typography} from "@mui/material";
+import SendIcon from '@mui/icons-material/Send';
 
-function App() {
+export default function App() {
     const [count, setCount] = useState(0);
+    const [file, setFile] = useState(null);
+
+    function changeHandler(event) {
+        console.log(event.target.files[0]);
+        setFile(event.target.files[0]);
+    }
+
+    // {file?.name || "No file selected"}
+    // {file && file.name ? file.name : "No file selected"}
 
     return (
-        <div className="App">
-            <header className="App-header">
-                <img src={logo} className="App-logo" alt="logo" />
-                <p>Hello world!</p>
-                <a className="App-link" href="https://reactjs.org" target="_blank" rel="noopener noreferrer">
-                    Learn React
-                </a>
+        <Container maxWidth="sm">
+            <Box sx={{ my: 4 }}>
+                <Typography variant="h4" component="h1" gutterBottom>
+                    File name {file?.name || "No file selected"}
+                </Typography>
                 <p>You clicked {count} times</p>
-                <button onClick={() => setCount(count + 1)}>Click me</button>
-            </header>
-        </div>
+                <Button endIcon={<SendIcon />} variant="contained" onClick={() => setCount(count + 1)}>Increment</Button>
+                <br/>
+                <Box mt={5}>
+                    <Button
+                        variant="contained"
+                        component="label"
+                    >
+                        Upload File
+                        <input
+                            type="file"
+                            onChange={changeHandler}
+                            hidden
+                        />
+                    </Button>
+                </Box>
+                <Copyright websiteName={"QuizMaker"} copyrightYear={new Date().getFullYear()} />
+            </Box>
+        </Container>
     );
 }
 
-export default App;
+function Copyright(props) {
+    return (
+        <Typography variant="body2" color="text.secondary" align="center">
+            {'Copyright © '}
+            <Link color="inherit" href="https://mui.com/">
+                {props.websiteName}
+            </Link>{' '}
+            {props.copyrightYear}
+            {'.'}
+        </Typography>
+    );
+}
