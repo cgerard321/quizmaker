@@ -1,6 +1,23 @@
-### QUIZMAKER PROJECT 
+## QUIZMAKER PROJECT 
 
 Sponsored by Champlain College - St. Lambert
+
+## Installation Instructions
+
+1. Install node.js from https://nodejs.org/en/download/
+   
+   Tutorial: https://phoenixnap.com/kb/install-node-js-npm-on-windows
+2. Follow the [Github setup instructions](#github-setup) below to prepare your local repository.
+3. Install the dependencies in the package.json file by running the following command: 
+```
+npm install
+```
+4. Test out your installation by starting the application. 
+```
+npm run start
+```
+
+## Naming Conventions
 
 ### Branch Naming
 
@@ -11,7 +28,7 @@ Sponsored by Champlain College - St. Lambert
     - doc/
     - conf/
 - After the slash, add the JIRA id (it will be something like QM-4).
-- 
+
 - The full branch name would look like this `feat/QM-4_Add_Multiple_Choice_Question` and would be created and navigated to by executing the following command:
 
 ```
@@ -38,7 +55,7 @@ feat(JiraID): short description
 feat(JiraID): short description (#420)
 ```
 
-## Setup
+### Github Setup
 
 - First create an account on GitHub
 - Download git https://git-scm.com/downloads
@@ -133,12 +150,20 @@ git push
 - Again this is the same this as saying `git push origin YOUR-BRANCH-NAME` the `origin` and `YOUR-BRANCH-NAME` are implicitly applied
 - If git gives you and error here telling you that you need to set the remote as upstream, simply copy/paste the command it gives you. Next time you push on this branch, you won't get this error.
 
-- Imagine at this point that everything in the story is done, and you are ready to get your code reviewed by the other devs. We need to make a pull request to do that
-- Go to your origin's github page (or project repo) and make a new pull request. At the top, verify that the branch (thing you want to compare) and base are all coming from and going to the correct place. "Compare" should be YOUR-BRANCH-NAME and "base" should be main.
-- Add a title as per the instructions in the 'structure' section, and make sure to add the label on the side bar, indicating which team you are on
-- In order to merge this Pull Request (PR), we need two other people to review and approve it. You can get other peoples attention by 'requesting a review' on the side bar or by sending them a DM in slack
-- Start by asking people on your team to do the review but don't hesitate to ask someone from a different team if there is an interaction
-- Once you've pleased everyone, your code is in prime condition, and you have no merge conflicts you can finally hit the 'squash and merge' button and set another title. Follow the naming conventions in the 'Pull Request Commit Naming' section of 'Structure'
+
+### Pull Requests
+
+- Imagine at this point that everything in the story is done, and you are ready to get your code reviewed by the other devs. We need to make a pull request to do that.
+- Before embarking on this new challenge, we want to make sure the code is as "clean" as possible. To do this we'll run ESLint which is hooked up to Prettier. It will attempt to fix any issues it finds. You will need to handle any issues that it cannot automatically fix. 
+- Note: this is a very important step. ESLint is part of the CI pipeline, which means your PR will fail if you have linting errors.
+```
+npm run lint:fix
+```
+
+- Now, if everything is okay, go to your origin's github page (or project repo) and make a new pull request. At the top, verify that the branch (thing you want to compare) and base are all coming from and going to the correct place. "Compare" should be YOUR-BRANCH-NAME and "base" should be main.
+- Add a title as per the instructions in the [Pull Requests (PR) Naming](#pull-requests-pr-naming) section, and make sure to add the label on the side bar, indicating which team you are on
+- In order to merge this Pull Request (PR), we need one other person to review and approve it. You can get other peoples attention by 'requesting a review' on the side bar or by sending them a DM in slack
+- Once you've pleased everyone, your code is in prime condition, and you have no merge conflicts (see the [Merge Conflicts / Updating your Branch](#merge-conflicts--updating-your-branch) section if you encounter issues), you can finally hit the 'squash and merge' button and set another title. Follow the naming conventions in the [Pull Request Commit Naming](#pull-request-commit-naming) section.
 - Your PR is now merged and everyone can fetch and rebase or pull to see the work you've done
 - Congrats. Just repeat this process until the semester is over.
 
