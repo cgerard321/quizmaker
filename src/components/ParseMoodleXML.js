@@ -1,5 +1,10 @@
-export default function ParseMoodleXML(props) {
-    console.log(props.file);
+export default function parseMoodleXML(evt) {
+    const myFile = evt.target.result;
 
-    return null;
+    const parser = new DOMParser();
+
+    const xmlDoc = parser.parseFromString(myFile, "text/xml");
+    const x = xmlDoc.getElementsByTagName("question");
+
+    console.log(x);
 }
