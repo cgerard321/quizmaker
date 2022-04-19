@@ -10,7 +10,8 @@ export default function FileTextArea(props) {
     return (
         <TextareaAutosize
             aria-label="minimum height"
-            style={{ boxSizing: "border-box", width: 300 }}
+            style={{ boxSizing: "border-box", width: '80%', resize: 
+    'vertical', overflow: 'auto' }}
             minRows={10}
             value={fileString}
         />
