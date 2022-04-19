@@ -1,0 +1,10 @@
+.textarea {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+}
+.title {
+    font-size: medium;
+    align-items: left;
+}
