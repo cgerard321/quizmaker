@@ -1,7 +1,7 @@
 import React from "react";
 
 const QuestionBankContext = React.createContext({
-    questions: [],
+    questionBank: [],
     addQuestion: (question) => {},
     removeQuestion: (id) => {},
     editQuestion: (id, question) => {},
