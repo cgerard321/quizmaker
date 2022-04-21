@@ -6,6 +6,7 @@ import { makeStyles } from "@material-ui/styles";
 import QuestionBankProvider from "../store/QuestionBankProvider";
 import QuestionBankSection from "../components/QuestionBankSection/QuestionBankSection";
 import classes from "./Home.module.css";
+import EditorSection from "../components/Editor/EditorSection";
 
 
 const useStyles = makeStyles({
@@ -58,7 +59,7 @@ export default function Home() {
                 </Grid>
                 <Grid item xs>
                     <div className={classes.container}>
-                        <h3 className="title">Select and edit a question</h3>
+                        <EditorSection />
                     </div>
                 </Grid>
             </Grid>
