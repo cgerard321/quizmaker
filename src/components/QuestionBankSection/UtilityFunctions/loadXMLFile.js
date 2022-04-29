@@ -49,6 +49,17 @@ export function loadXMLFile(questionbank, myFile) {
                     questionbank.push(question);	//store the imported question in the database	
                     break;
                 }
+            case "essay":
+                {
+                    //any other fields needed for this type?
+                    console.log("question.type is 'essay'");
+                    question.name = xmlQList[i].getElementsByTagName('text')[0].firstChild.nodeValue;
+                    question.question_text = xmlQList[i].getElementsByTagName('questiontext')[0].getElementsByTagName('text')[0].childNodes[0].nodeValue;
+                    question.default_grade = xmlQList[i].getElementsByTagName('defaultgrade')[0].childNodes[0].nodeValue;
+                    question.penalty = xmlQList[i].getElementsByTagName('penalty')[0].childNodes[0].nodeValue;
+                    questionbank.push(question);	//store the imported question in the database
+                    break;
+                }
             default: {
                 break;
             }
