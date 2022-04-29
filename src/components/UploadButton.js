@@ -1,15 +1,20 @@
 import { Box, Button } from "@mui/material";
-import parseMoodleXML from "./ParseMoodleXML";
+
 
 export default function UploadButton(props) {
+
+
     function changeHandler(event) {
+        //event.preventDefault();
         const myFileObject = event.target.files[0];
         props.setFileObject(event.target.files[0]);
         const reader = new FileReader();
 
         reader.onload = function (evt) {
+            //evt.preventDefault();
             props.setFile(evt.target.result);
-            parseMoodleXML(evt);
+            //props.onShowTree(true);
+            
         };
 
         reader.readAsText(myFileObject, "UTF-8");

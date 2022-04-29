@@ -2,10 +2,18 @@ import { useReducer } from 'react';
 import QuestionBankContext from "./questionBank-context";
 
 const defaultQuestionBankState = {
-    questions: []
+    questionBank: []
 };
 
 const questionBankReducer = (state, action) => {
+
+    if (action.type === 'ADD') {
+        const existingQuestionBank = state.questionBank;
+        let updatedQuestionBank = existingQuestionBank.push(action.question);
+        return {
+            questionBank: updatedQuestionBank
+        };
+    }
 
     return defaultQuestionBankState;
 };
@@ -27,15 +35,17 @@ const QuestionBankProvider = (props) => {
     }
 
     const questionBankContext = {
-        questions: questionBankState.questions,
+        questionBank: questionBankState.questionBank,
         addQuestion: addQuestionToQuestionBankHandler,
         removeQuestion: removeQuestionFromQuestionBankHandler,
         editQuestion: editQuestionFromQuestionBankHandler
     };
 
     return (
-        <QuestionBank.Provider value={questionBankContext}>
+        <QuestionBankContext.Provider value={questionBankContext}>
             {props.children}
-        </QuestionBank.Provider>
+        </QuestionBankContext.Provider>
     )
 };
+
+export default QuestionBankProvider;
