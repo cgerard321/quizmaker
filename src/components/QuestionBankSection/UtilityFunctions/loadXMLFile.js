@@ -191,7 +191,6 @@ export function loadXMLFile(questionbank, myFile) {
                 questionbank.push(question); //store the imported question in the database
                 break;
             }
-
             default: {
                 break;
             }
