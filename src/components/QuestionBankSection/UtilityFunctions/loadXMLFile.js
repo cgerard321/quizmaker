@@ -51,8 +51,7 @@ export function loadXMLFile(questionbank, myFile) {
                 }
             case "essay":
                 {
-                    //any other fields needed for this type?
-                    console.log("question.type is 'essay'");
+                    //console.log("question.type is 'essay'");
                     question.name = xmlQList[i].getElementsByTagName('text')[0].firstChild.nodeValue;
                     question.question_text = xmlQList[i].getElementsByTagName('questiontext')[0].getElementsByTagName('text')[0].childNodes[0].nodeValue;
                     question.default_grade = xmlQList[i].getElementsByTagName('defaultgrade')[0].childNodes[0].nodeValue;
@@ -60,6 +59,55 @@ export function loadXMLFile(questionbank, myFile) {
                     questionbank.push(question);	//store the imported question in the database
                     break;
                 }
+            case "truefalse":
+                {
+                    console.log("question.type is 'truefalse'");
+                    question.name = xmlQList[i].getElementsByTagName('text')[0].firstChild.nodeValue;
+                    question.question_text = xmlQList[i].getElementsByTagName('questiontext')[0].getElementsByTagName('text')[0].childNodes[0].nodeValue;
+
+                    if (xmlQList[i].getElementsByTagName('defaultgrade')[0] && xmlQList[i].getElementsByTagName('defaultgrade')[0].childNodes[0]) {
+                        question.default_grade = xmlQList[i].getElementsByTagName('defaultgrade')[0].childNodes[0].nodeValue;
+                    }
+                    else {
+                        //if the defaultgrade is empty, make it 1                    {
+                        question.default_grade = 1;
+                    };
+
+                    if (xmlQList[i].getElementsByTagName('penalty')[0] && xmlQList[i].getElementsByTagName('penalty')[0].childNodes[0]) {
+                        question.penalty = xmlQList[i].getElementsByTagName('penalty')[0].childNodes[0].nodeValue;
+                    }
+                    else {
+                        //if the penalty is empty, make it 1
+                        question.penalty = 1;
+                    };
+
+                    var choices = xmlQList[i].getElementsByTagName('answer');
+
+                    for (var choice_nr = 0; choice_nr < choices.length; choice_nr++) {
+                        if (choices[choice_nr].getElementsByTagName('text')[0] && choices[choice_nr].getElementsByTagName('text')[0].childNodes[0])
+                            if (choices[choice_nr].getElementsByTagName('text')[0].childNodes[0].nodeValue == "") {
+                                //if the choice contains no text, we won't import it
+                                continue;
+                            }
+                            else {
+                                question.choices.push(choices[choice_nr].getElementsByTagName('text')[0].childNodes[0].nodeValue);
+                            };
+
+                        if (choices[choice_nr].getAttribute('fraction')) {
+                            question.value.push(choices[choice_nr].getAttribute('fraction'));
+                        }
+                        else {
+                            question.value.push(0);
+                        };
+
+                        if (choices[choice_nr].getElementsByTagName('feedback')[0] && choices[choice_nr].getElementsByTagName('feedback')[0].childNodes[0]) {
+                            question.feedback.push(choices[choice_nr].getElementsByTagName('feedback')[0].childNodes[0].nodeValue);
+                        };
+                    }
+                    questionbank.push(question);	//store the imported question in the database		
+                    break;
+                }
+
             default: {
                 break;
             }

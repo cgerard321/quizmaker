@@ -105,7 +105,7 @@ const QBTree = (props) => {
                 text: questionbank[i].name,
                 parent: getParentCategoryKey(questionbank[i], questionbank),
                 droppable: questionbank[i].type === 'category' ? true : false,
-                data: { fileType: questionbank[i].type }
+                data: { questionType: questionbank[i].type }
             }
             myTreeData.push(data);
         }
