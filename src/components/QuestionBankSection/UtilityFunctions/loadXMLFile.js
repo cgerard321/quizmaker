@@ -158,7 +158,6 @@ export function loadXMLFile(questionbank, myFile) {
                 } else {
                     question.penalty = 0.33;
                 } //if the defaultgrade is empty, make it 0.33
-
                 let choices = xmlQList[i].getElementsByTagName("answer");
                 for (let choice_nr = 0; choice_nr < choices.length; choice_nr++) {
                     if (
