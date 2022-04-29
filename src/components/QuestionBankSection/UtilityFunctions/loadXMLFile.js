@@ -1,5 +1,6 @@
 import { defaultQuestion } from "./defaultQuestion";
 import { getDumCatKey } from "./getDumCatKey";
+import * as Constants from "../../../constants/questionBankConstants.js";
 
 export function loadXMLFile(questionbank, myFile) {
     let current_category = "top";
@@ -76,7 +77,7 @@ export function loadXMLFile(questionbank, myFile) {
                     question.default_grade =
                         xmlQList[i].getElementsByTagName("defaultgrade")[0].childNodes[0].nodeValue;
                 } else {
-                    //if the defaultgrade is empty, make it 1                    {
+                    //if the defaultgrade is empty, make it 1 
                     question.default_grade = 1;
                 }
 
@@ -90,9 +91,9 @@ export function loadXMLFile(questionbank, myFile) {
                     question.penalty = 1;
                 }
 
-                var choices = xmlQList[i].getElementsByTagName("answer");
+                let choices = xmlQList[i].getElementsByTagName("answer");
 
-                for (var choice_nr = 0; choice_nr < choices.length; choice_nr++) {
+                for (let choice_nr = 0; choice_nr < choices.length; choice_nr++) {
                     if (
                         choices[choice_nr].getElementsByTagName("text")[0] &&
                         choices[choice_nr].getElementsByTagName("text")[0].childNodes[0]
@@ -121,6 +122,72 @@ export function loadXMLFile(questionbank, myFile) {
                         );
                     }
                 }
+                questionbank.push(question); //store the imported question in the database
+                break;
+            }
+            case "multichoice": {
+                console.log("question.type is 'truefalse'");
+                question.name = xmlQList[i].getElementsByTagName("text")[0].firstChild.nodeValue;
+                question.question_text = xmlQList[i]
+                    .getElementsByTagName("questiontext")[0]
+                    .getElementsByTagName("text")[0].childNodes[0].nodeValue;
+                if (xmlQList[i].getElementsByTagName("single")[0])
+                    question.single_answer =
+                        xmlQList[i].getElementsByTagName("single")[0].childNodes[0].nodeValue === "true";
+                if (xmlQList[i].getElementsByTagName("shuffleanswers")[0])
+                    question.shuffle_answers =
+                        xmlQList[i].getElementsByTagName("shuffleanswers")[0].childNodes[0].nodeValue === "1";
+                if (xmlQList[i].getElementsByTagName("answernumbering")[0])
+                    question.numbering = Constants.answer_numbering.indexOf(
+                        xmlQList[i].getElementsByTagName("answernumbering")[0].childNodes[0].nodeValue,
+                    );
+                if (
+                    xmlQList[i].getElementsByTagName("defaultgrade")[0] &&
+                    xmlQList[i].getElementsByTagName("defaultgrade")[0].childNodes[0]
+                ) {
+                    question.default_grade =
+                        xmlQList[i].getElementsByTagName("defaultgrade")[0].childNodes[0].nodeValue;
+                } else {
+                    question.default_grade = 1;
+                } //if the defaultgrade is empty, make it 1
+                if (
+                    xmlQList[i].getElementsByTagName("penalty")[0] &&
+                    xmlQList[i].getElementsByTagName("penalty")[0].childNodes[0]
+                ) {
+                    question.penalty = xmlQList[i].getElementsByTagName("penalty")[0].childNodes[0].nodeValue;
+                } else {
+                    question.penalty = 0.33;
+                } //if the defaultgrade is empty, make it 0.33
+
+                let choices = xmlQList[i].getElementsByTagName("answer");
+                for (let choice_nr = 0; choice_nr < choices.length; choice_nr++) {
+                    if (
+                        choices[choice_nr].getElementsByTagName("text")[0] &&
+                        choices[choice_nr].getElementsByTagName("text")[0].childNodes[0]
+                    )
+                        if (choices[choice_nr].getElementsByTagName("text")[0].childNodes[0].nodeValue === "") {
+                            //if the choice contains no text, we won't import it
+                            continue;
+                        } 
+                        else {
+                            question.choices.push(
+                                choices[choice_nr].getElementsByTagName("text")[0].childNodes[0].nodeValue,
+                            );
+                        }
+
+                    if (choices[choice_nr].getAttribute("fraction"))
+                        question.value.push(choices[choice_nr].getAttribute("fraction"));
+                    else question.value.push(0);
+
+                    if (
+                        choices[choice_nr].getElementsByTagName("feedback")[0] &&
+                        choices[choice_nr].getElementsByTagName("feedback")[0].childNodes[0]
+                    )
+                        question.feedback.push(
+                            choices[choice_nr].getElementsByTagName("feedback")[0].childNodes[0].nodeValue,
+                        );
+                }
+
                 questionbank.push(question); //store the imported question in the database
                 break;
             }
