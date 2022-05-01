@@ -63,6 +63,9 @@ const QBTree = (props) => {
 
         updateQuestionCategories(question_categories, questionbank);
 
+        console.log("Printing out questionbank before Id numbering");
+        console.log(questionbank);
+
         //assign unique ids to each question
         for (let i = 0; i < questionbank.length; i++) {
             questionbank[i].id = i;
