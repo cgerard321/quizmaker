@@ -1,13 +1,11 @@
 import "../App.css";
-import { useState} from "react";
+import { useState } from "react";
 import { Grid } from "@mui/material";
 import FileTextArea from "../components/FileTextArea";
 import { makeStyles } from "@material-ui/styles";
 import QuestionBankProvider from "../store/QuestionBankProvider";
 import QuestionBankSection from "../components/QuestionBankSection/QuestionBankSection";
-import classes from "./Home.module.css";
 import EditorSection from "../components/Editor/EditorSection";
-
 
 const useStyles = makeStyles({
     container: {
@@ -15,27 +13,25 @@ const useStyles = makeStyles({
         marginRight: 6,
         marginLeft: 6,
         height: "85vh", // So that grids go all the way down to before footer
-        minHeight: '50vh', // Give minimum height to a div
+        minHeight: "50vh", // Give minimum height to a div
         border: "1px solid black",
         fontSize: 30,
         textAlign: "left",
-        padding: 20
+        padding: 20,
     },
     containerTall: {
-        minHeight: 250 // This div has higher minimum height
-    }
+        minHeight: 250, // This div has higher minimum height
+    },
 });
 
 export default function Home() {
     const classes = useStyles();
 
-    const [count, setCount] = useState(0);
     //file object
     const [fileObject, setFileObject] = useState(null);
     //file as text
     const [file, setFile] = useState("nothing to display");
     //
-    
 
     return (
         <QuestionBankProvider>
@@ -54,7 +50,7 @@ export default function Home() {
                             setFileObject={setFileObject}
                             file={file}
                             fileObject={fileObject}
-                            />
+                        />
                     </div>
                 </Grid>
                 <Grid item xs>

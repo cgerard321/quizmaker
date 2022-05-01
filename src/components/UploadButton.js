@@ -1,9 +1,6 @@
 import { Box, Button } from "@mui/material";
 
-
 export default function UploadButton(props) {
-
-
     function changeHandler(event) {
         //event.preventDefault();
         const myFileObject = event.target.files[0];
@@ -13,8 +10,6 @@ export default function UploadButton(props) {
         reader.onload = function (evt) {
             //evt.preventDefault();
             props.setFile(evt.target.result);
-            //props.onShowTree(true);
-            
         };
 
         reader.readAsText(myFileObject, "UTF-8");

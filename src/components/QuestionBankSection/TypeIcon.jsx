@@ -7,6 +7,7 @@ import DescriptionIcon from "@mui/icons-material/Description";
 import description from "../../assets/icons/icon-description.svg";
 import essay from "../../assets/icons/icon-essay.svg";
 import truefalse from "../../assets/icons/icon-truefalse.svg";
+import multiplechoice from "../../assets/icons/icon-multiplechoice.svg";
 
 export const TypeIcon = (props) => {
   if (props.droppable) {
@@ -18,8 +19,10 @@ export const TypeIcon = (props) => {
       return <img src={description} alt="Description" />;
     case "essay":
       return <img src={essay} alt="Essay" />;
-      case "truefalse":
-        return <img src={truefalse} alt="True-False" />;
+    case "truefalse":
+      return <img src={truefalse} alt="True-False" />;
+      case "multichoice":
+      return <img src={multiplechoice} alt="Multiple-Choice" />;
     case "image":
       return <ImageIcon />;
     case "csv":

@@ -1,17 +1,16 @@
-import { useReducer } from 'react';
+import { useReducer } from "react";
 import QuestionBankContext from "./questionBank-context";
 
 const defaultQuestionBankState = {
-    questionBank: []
+    questionBank: [],
 };
 
 const questionBankReducer = (state, action) => {
-
-    if (action.type === 'ADD') {
+    if (action.type === "ADD") {
         const existingQuestionBank = state.questionBank;
         let updatedQuestionBank = existingQuestionBank.push(action.question);
         return {
-            questionBank: updatedQuestionBank
+            questionBank: updatedQuestionBank,
         };
     }
 
@@ -19,33 +18,28 @@ const questionBankReducer = (state, action) => {
 };
 
 const QuestionBankProvider = (props) => {
-
     const [questionBankState, dispatchQuestionBankAction] = useReducer(questionBankReducer, defaultQuestionBankState);
 
     const addQuestionToQuestionBankHandler = (question) => {
-        dispatchQuestionBankAction({type: 'ADD', question: question})
-    }
+        dispatchQuestionBankAction({ type: "ADD", question: question });
+    };
 
     const removeQuestionFromQuestionBankHandler = (id) => {
-        dispatchQuestionBankAction({type: 'REMOVE', id: id})
-    }
+        dispatchQuestionBankAction({ type: "REMOVE", id: id });
+    };
 
     const editQuestionFromQuestionBankHandler = (id, question) => {
-        dispatchQuestionBankAction({type: 'EDIT', id: id, question: question})
-    }
+        dispatchQuestionBankAction({ type: "EDIT", id: id, question: question });
+    };
 
     const questionBankContext = {
         questionBank: questionBankState.questionBank,
         addQuestion: addQuestionToQuestionBankHandler,
         removeQuestion: removeQuestionFromQuestionBankHandler,
-        editQuestion: editQuestionFromQuestionBankHandler
+        editQuestion: editQuestionFromQuestionBankHandler,
     };
 
-    return (
-        <QuestionBankContext.Provider value={questionBankContext}>
-            {props.children}
-        </QuestionBankContext.Provider>
-    )
+    return <QuestionBankContext.Provider value={questionBankContext}>{props.children}</QuestionBankContext.Provider>;
 };
 
 export default QuestionBankProvider;
