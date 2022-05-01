@@ -77,7 +77,7 @@ export function loadXMLFile(questionbank, myFile) {
                     question.default_grade =
                         xmlQList[i].getElementsByTagName("defaultgrade")[0].childNodes[0].nodeValue;
                 } else {
-                    //if the defaultgrade is empty, make it 1 
+                    //if the defaultgrade is empty, make it 1
                     question.default_grade = 1;
                 }
 
@@ -168,8 +168,7 @@ export function loadXMLFile(questionbank, myFile) {
                         if (choices[choice_nr].getElementsByTagName("text")[0].childNodes[0].nodeValue === "") {
                             //if the choice contains no text, we won't import it
                             continue;
-                        } 
-                        else {
+                        } else {
                             question.choices.push(
                                 choices[choice_nr].getElementsByTagName("text")[0].childNodes[0].nodeValue,
                             );
@@ -192,6 +191,63 @@ export function loadXMLFile(questionbank, myFile) {
                 break;
             }
 
+            case "shortanswer": {
+                question.name = xmlQList[i].getElementsByTagName("text")[0].firstChild.nodeValue;
+                question.question_text = xmlQList[i]
+                    .getElementsByTagName("questiontext")[0]
+                    .getElementsByTagName("text")[0].childNodes[0].nodeValue;
+                if (xmlQList[i].getElementsByTagName("usecase")[0])
+                    question.case_sensitive =
+                        xmlQList[i].getElementsByTagName("usecase")[0].childNodes[0].nodeValue === "1";
+                if (
+                    xmlQList[i].getElementsByTagName("defaultgrade")[0] &&
+                    xmlQList[i].getElementsByTagName("defaultgrade")[0].childNodes[0]
+                ) {
+                    question.default_grade =
+                        xmlQList[i].getElementsByTagName("defaultgrade")[0].childNodes[0].nodeValue;
+                } else {
+                    question.default_grade = 1;
+                } //if the defaultgrade is empty, make it 1
+                if (
+                    xmlQList[i].getElementsByTagName("penalty")[0] &&
+                    xmlQList[i].getElementsByTagName("penalty")[0].childNodes[0]
+                ) {
+                    question.penalty = xmlQList[i].getElementsByTagName("penalty")[0].childNodes[0].nodeValue;
+                } else {
+                    question.penalty = 0.33;
+                } //if the defaultgrade is empty, make it 0.33
+
+                var choices = xmlQList[i].getElementsByTagName("answer");
+                for (var choice_nr = 0; choice_nr < choices.length; choice_nr++) {
+                    if (
+                        choices[choice_nr].getElementsByTagName("text")[0] &&
+                        choices[choice_nr].getElementsByTagName("text")[0].childNodes[0]
+                    )
+                        if (choices[choice_nr].getElementsByTagName("text")[0].childNodes[0].nodeValue === "") {
+                            continue;
+                        } //if the choice contains no text, we won't import it
+                        else {
+                            question.choices.push(
+                                choices[choice_nr].getElementsByTagName("text")[0].childNodes[0].nodeValue,
+                            );
+                        }
+
+                    if (choices[choice_nr].getAttribute("fraction"))
+                        question.value.push(choices[choice_nr].getAttribute("fraction"));
+                    else question.value.push(0);
+
+                    if (
+                        choices[choice_nr].getElementsByTagName("feedback")[0] &&
+                        choices[choice_nr].getElementsByTagName("feedback")[0].childNodes[0]
+                    )
+                        question.feedback.push(
+                            choices[choice_nr].getElementsByTagName("feedback")[0].childNodes[0].nodeValue,
+                        );
+                }
+
+                questionbank.push(question); //store the imported question in the database
+                break;
+            }
             default: {
                 break;
             }

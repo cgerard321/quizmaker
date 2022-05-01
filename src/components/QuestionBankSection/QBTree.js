@@ -63,6 +63,9 @@ const QBTree = (props) => {
 
         updateQuestionCategories(question_categories, questionbank);
 
+        console.log("Printing out questionbank before Id numbering");
+        console.log(questionbank);
+
         //assign unique ids to each question
         for (let i = 0; i < questionbank.length; i++) {
             questionbank[i].id = i;
@@ -96,8 +99,10 @@ const QBTree = (props) => {
                 text: questionbank[i].name,
                 parent: getParentCategoryKey(questionbank[i], questionbank),
                 droppable: questionbank[i].type === "category" ? true : false,
-                data: { questionType: questionbank[i].type,
-                        question: questionbank[i] },
+                data: {
+                    questionType: questionbank[i].type,
+                    question: questionbank[i],
+                },
             };
             myTreeData.push(data);
         }
