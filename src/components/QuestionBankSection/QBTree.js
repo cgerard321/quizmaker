@@ -135,6 +135,8 @@ const QBTree = (props) => {
                             draggingSource: styles.draggingSource,
                             dropTarget: styles.dropTarget,
                         }}
+                        sort={false}
+                        insertDroppableFirst={false}
                     />
                 </div>
             </ThemeProvider>
