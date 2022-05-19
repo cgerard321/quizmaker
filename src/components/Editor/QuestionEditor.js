@@ -1,19 +1,34 @@
 import React, { useRef } from "react";
 import { Editor } from "@tinymce/tinymce-react";
 
-export default function QuestionEditor() {
+export default function QuestionEditor(props) {
     const editorRef = useRef(null);
     const log = () => {
         if (editorRef.current) {
             console.log(editorRef.current.getContent());
         }
     };
+
+    const handleChange = (questionText) => {
+        //need to pass updated question data back to tree
+
+        console.log('Updated question text: ' + questionText);
+
+        
+    }
+
+    console.log('Editor selected node: ' + props.selectedNode?.text + "none");
+
+    const questionText = props.selectedNode?.data.question.question_text ?? <p>This is default text.</p>
+
     return (
         <>
+
             <Editor
-                apiKeys="dy5d73h04m0c3d9gk75fmu6p1rzbhcm42w384u4xbtud7jba"
+                textareaName="content"
                 onInit={(evt, editor) => (editorRef.current = editor)}
-                initialValue="<p>This is the initial content of the editor.</p>"
+                initialValue={questionText}
+                onEditorChange={handleChange}
                 init={{
                     height: 250,
                     menubar: false,

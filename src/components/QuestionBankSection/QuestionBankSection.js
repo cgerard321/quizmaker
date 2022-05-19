@@ -10,7 +10,11 @@ const QuestionBankSection = (props) => {
                 Question Bank <AiFillBank />
             </h3>
             <UploadButton setFile={props.setFile} setFileObject={props.setFileObject} />
-            <QBTree file={props.file} action="OPEN" />
+            <QBTree
+                file={props.file}
+                selectedNode={props.selectedNode}
+                setSelectedNode={props.setSelectedNode}
+            />
         </Fragment>
     );
 };

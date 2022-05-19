@@ -5,7 +5,9 @@ const EditorSection = (props) => {
     return (
         <Fragment>
             <h3 className="title">Select and edit a question</h3>
-            <QuestionEditor />
+            <QuestionEditor
+                selectedNode={props.selectedNode}
+                setSelectedNode={props.setSelectedNode} />
         </Fragment>
     );
 };

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Tree } from "@minoru/react-dnd-treeview";
+import { Tree, NodeModel } from "@minoru/react-dnd-treeview";
 import defaultTree from "./defaultTree.json";
 import { ThemeProvider, CssBaseline } from "@mui/material";
 import { StylesProvider } from "@material-ui/styles";
@@ -14,6 +14,11 @@ import { getDumCatKey } from "./UtilityFunctions/getDumCatKey";
 const QBTree = (props) => {
     const [treeData, setTreeData] = useState(defaultTree);
     //const handleDrop = (newTree) => setTreeData(newTree);
+
+    const handleSelect = (node) => {
+        console.log("Current node: " + node.text);
+        props.setSelectedNode(node);
+    };
 
     const myFile = props.file;
     //console.log(myFile);
@@ -124,11 +129,27 @@ const QBTree = (props) => {
             <ThemeProvider theme={treeTheme}>
                 <CssBaseline />
                 <div className={styles.app}>
+                    <div className={styles.current}>
+                        <p>
+                            Current node:{" "}
+                            <span className={styles.currentLabel}>
+                                {props.selectedNode ? props.selectedNode.text : "none"}
+                            </span>
+                        </p>
+                    </div>
                     <Tree
                         tree={treeData}
                         rootId={-1}
-                        render={(node, { depth, isOpen, onToggle }) => (
-                            <CustomNode node={node} depth={depth} isOpen={isOpen} onToggle={onToggle} />
+                        render={(node: NodeModel<CustomData>,
+                            { depth, isOpen, onToggle }
+                        ) => (
+                            <CustomNode
+                                node={node}
+                                depth={depth}
+                                isOpen={isOpen}
+                                onToggle={onToggle}
+                                isSelected={node.id === props.selectedNode?.id}
+                                onSelect={handleSelect} />
                         )}
                         classes={{
                             root: styles.treeRoot,

@@ -13,10 +13,13 @@ export const CustomNode = (props) => {
     props.onToggle(props.node.id);
   };
 
+  const handleSelect = () => props.onSelect(props.node);
+
   return (
     <div
       className={`tree-node ${styles.root}`}
       style={{ paddingInlineStart: indent }}
+      onClick={handleSelect}
     >
       <div
         className={`${styles.expandIconWrapper} ${

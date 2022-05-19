@@ -32,6 +32,8 @@ export default function Home() {
     //file as text
     const [file, setFile] = useState("nothing to display");
     //
+    const [selectedNode, setSelectedNode] = useState(null);
+
 
     return (
         <QuestionBankProvider>
@@ -50,12 +52,16 @@ export default function Home() {
                             setFileObject={setFileObject}
                             file={file}
                             fileObject={fileObject}
+                            selectedNode={selectedNode}
+                            setSelectedNode={setSelectedNode}
                         />
                     </div>
                 </Grid>
                 <Grid item xs>
                     <div className={classes.container}>
-                        <EditorSection />
+                        <EditorSection 
+                            selectedNode={selectedNode}
+                            setSelectedNode={setSelectedNode} />
                     </div>
                 </Grid>
             </Grid>
