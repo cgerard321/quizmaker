@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { DndProvider } from "react-dnd";
 import { Tree, NodeModel } from "@minoru/react-dnd-treeview";
 import defaultTree from "./defaultTree.json";
 import { ThemeProvider, CssBaseline } from "@mui/material";
