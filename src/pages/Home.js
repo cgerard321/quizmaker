@@ -5,7 +5,6 @@ import FileTextArea from "../components/FileTextArea";
 import { makeStyles } from "@material-ui/styles";
 import QuestionBankProvider from "../store/QuestionBankProvider";
 import QuestionBankSection from "../components/QuestionBankSection/QuestionBankSection";
-import EditorSection from "../components/Editor/EditorSection";
 
 const useStyles = makeStyles({
     container: {
@@ -32,38 +31,30 @@ export default function Home() {
     //file as text
     const [file, setFile] = useState("nothing to display");
     //
-    const [selectedNode, setSelectedNode] = useState(null);
+
 
 
     return (
         <QuestionBankProvider>
             <Grid container direction="row" spacing={2}>
-                <Grid item xs>
+                <Grid item xs={4}>
                     <div className={classes.container}>
                         <h3 className="title">Import</h3>
 
                         <FileTextArea className={classes.textarea} file={file} />
                     </div>
                 </Grid>
-                <Grid item xs>
+                <Grid item xs={8}>
                     <div className={classes.container}>
                         <QuestionBankSection
                             setFile={setFile}
                             setFileObject={setFileObject}
                             file={file}
                             fileObject={fileObject}
-                            selectedNode={selectedNode}
-                            setSelectedNode={setSelectedNode}
                         />
                     </div>
                 </Grid>
-                <Grid item xs>
-                    <div className={classes.container}>
-                        <EditorSection 
-                            selectedNode={selectedNode}
-                            setSelectedNode={setSelectedNode} />
-                    </div>
-                </Grid>
+                
             </Grid>
         </QuestionBankProvider>
     );

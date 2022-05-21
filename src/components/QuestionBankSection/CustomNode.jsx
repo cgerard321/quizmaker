@@ -13,6 +13,7 @@ export const CustomNode = (props) => {
     props.onToggle(props.node.id);
   };
 
+
   const handleSelect = () => props.onSelect(props.node);
 
   return (

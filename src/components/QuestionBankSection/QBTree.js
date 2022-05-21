@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { DndProvider } from "react-dnd";
-import { Tree, NodeModel } from "@minoru/react-dnd-treeview";
+import { Grid } from "@mui/material";
+import { Tree } from "@minoru/react-dnd-treeview";
 import defaultTree from "./defaultTree.json";
 import { ThemeProvider, CssBaseline } from "@mui/material";
 import { StylesProvider } from "@material-ui/styles";
@@ -11,56 +11,60 @@ import { loadXMLFile } from "./UtilityFunctions/loadXMLFile.js";
 import { postLoadCleanUp } from "./UtilityFunctions/postLoadCleanUp";
 import { updateQuestionCategories } from "./UtilityFunctions/updateQuestionCategories.js";
 import { getDumCatKey } from "./UtilityFunctions/getDumCatKey";
+import EditorSection from "../Editor/EditorSection";
+import {copyNode} from "./UtilityFunctions/helper";
 
 const QBTree = (props) => {
     const [treeData, setTreeData] = useState(defaultTree);
     //const handleDrop = (newTree) => setTreeData(newTree);
+    const [selectedNode, setSelectedNode] = useState(null);
 
     const handleSelect = (node) => {
         console.log("Current node: " + node.text);
-        props.setSelectedNode(node);
+        console.log(node);
+        setSelectedNode(node);
     };
 
+    const handleQuestionNameChange = (value) => {
+        const newTree = treeData.map((node) => {
+
+            console.log("value is: " + value.target.value);
+
+            if (node.id === selectedNode.id) {
+            
+                let newNode = copyNode(node);
+                newNode.text = value.target.value;
+                newNode.data.question.name = value.target.value;
+
+                return newNode;
+            }
+            return node;
+        });
+        setTreeData(newTree);
+    }
+
+    const handleQuestionTextChange = (value) => {
+        const newTree = treeData.map((node) => {
+
+            console.log("value is: " + value);
+
+            if (node.id === selectedNode.id) {
+                
+                let newNode = copyNode(node);
+                newNode.data.question.question_text = value;
+
+                return newNode;
+            }
+            return node;
+        });
+        setTreeData(newTree);
+    }
+
     const myFile = props.file;
-    //console.log(myFile);
 
     const questionbank = [];
 
     const question_categories = []; //use this to keep track of the categories
-
-    // const handleSubmit = (newNode) => {
-    //     const lastId = getLastId(treeData) + 1;
-
-    //     setTreeData([
-    //         ...treeData,
-    //         {
-    //             ...newNode,
-    //             id: lastId
-    //         }
-    //     ])
-    // };
-
-    // const handleResetTree = () => {
-    //     setTreeData(defaultTree);
-    // }
-
-    // const getLastId = (treeData) => {
-    //     const reversedArray = [...treeData].sort((a, b) => {
-    //         if (a.id < b.id) {
-    //             return 1;
-    //         } else if (a.id > b.id) {
-    //             return -1;
-    //         }
-
-    //         return 0;
-    //     });
-
-    //     if (reversedArray.length > 0) {
-    //         return reversedArray[0].id;
-    //     }
-
-    //     return 0;
-    // };
 
     const buildQuestionBankFromXMLFile = () => {
         loadXMLFile(questionbank, myFile);
@@ -129,40 +133,51 @@ const QBTree = (props) => {
         <StylesProvider injectFirst>
             <ThemeProvider theme={treeTheme}>
                 <CssBaseline />
-                <div className={styles.app}>
-                    <div className={styles.current}>
-                        <p>
-                            Current node:{" "}
-                            <span className={styles.currentLabel}>
-                                {props.selectedNode ? props.selectedNode.text : "none"}
-                            </span>
-                        </p>
-                    </div>
-                    <Tree
-                        tree={treeData}
-                        rootId={-1}
-                        render={(node: NodeModel<CustomData>,
-                            { depth, isOpen, onToggle }
-                        ) => (
-                            <CustomNode
-                                node={node}
-                                depth={depth}
-                                isOpen={isOpen}
-                                onToggle={onToggle}
-                                isSelected={node.id === props.selectedNode?.id}
-                                onSelect={handleSelect} />
-                        )}
-                        classes={{
-                            root: styles.treeRoot,
-                            draggingSource: styles.draggingSource,
-                            dropTarget: styles.dropTarget,
-                        }}
-                        sort={false}
-                        insertDroppableFirst={false}
-                    />
-                </div>
+                <Grid container direction="row" spacing={2}>
+                    <Grid item xs>
+                        <div className={styles.app}>
+                            <div className={styles.current}>
+                                <p>
+                                    Current node:{" "}
+                                    <span className={styles.currentLabel}>
+                                        {selectedNode ? selectedNode.text : "none"}
+                                    </span>
+                                </p>
+                            </div>
+                            <Tree
+                                tree={treeData}
+                                rootId={-1}
+                                render={(node: NodeModel<CustomData>,
+                                    { depth, isOpen, onToggle }
+                                ) => (
+                                    <CustomNode
+                                        node={node}
+                                        depth={depth}
+                                        isOpen={isOpen}
+                                        onToggle={onToggle}
+                                        isSelected={node.id === selectedNode?.id}
+                                        onSelect={handleSelect} />
+                                )}
+                                classes={{
+                                    root: styles.treeRoot,
+                                    draggingSource: styles.draggingSource,
+                                    dropTarget: styles.dropTarget,
+                                }}
+                                sort={false}
+                                insertDroppableFirst={false}
+                            />
+                        </div>
+                    </Grid>
+                    <Grid item xs>
+                        {selectedNode && <EditorSection
+                            selectedNode={selectedNode}
+                            setSelectedNode={setSelectedNode}
+                            onNameChange={handleQuestionNameChange}
+                            onTextChange={handleQuestionTextChange} />}
+                    </Grid>
+                </Grid>
             </ThemeProvider>
-        </StylesProvider>
+        </StylesProvider >
     );
 }; //end QBTree
 
