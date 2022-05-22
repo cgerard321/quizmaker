@@ -11,7 +11,7 @@ import { loadXMLFile } from "./UtilityFunctions/loadXMLFile.js";
 import { postLoadCleanUp } from "./UtilityFunctions/postLoadCleanUp";
 import { updateQuestionCategories } from "./UtilityFunctions/updateQuestionCategories.js";
 import { getDumCatKey } from "./UtilityFunctions/getDumCatKey";
-import {copyNode} from "./UtilityFunctions/helper";
+import { copyNode } from "./UtilityFunctions/helper";
 import QuestionEditor from "../Editor/QuestionEditor";
 
 const QBTree = (props) => {
@@ -25,16 +25,23 @@ const QBTree = (props) => {
         setSelectedNode(node);
     };
 
-    const handleQuestionNameChange = (e) => {
-        const newTree = treeData.map((node) => {       
+    const handleFieldChange = (e) => {
+        const newTree = treeData.map((node) => {
 
             if (node.id === selectedNode.id) {
-                console.log("value is: " + e.target.value);
-            
                 const newNode = copyNode(node);
-                newNode.text = e.target.value;
-                newNode.data.question.name = e.target.value;
-
+                switch (e.target.name) {
+                    case "name":
+                        newNode.text = e.target.value;
+                        newNode.data.question.name = e.target.value;
+                        break;
+                    case "defaultGrade":
+                        newNode.data.question.default_grade = e.target.value;
+                        break;
+                    case "penalty":
+                        newNode.data.question.penalty = e.target.value;
+                        break;
+                }
                 return newNode;
             }
             return node;
@@ -48,7 +55,7 @@ const QBTree = (props) => {
             console.log("value is: " + value);
 
             if (node.id === selectedNode.id) {
-                
+
                 let newNode = copyNode(node);
                 newNode.data.question.question_text = value;
 
@@ -134,8 +141,8 @@ const QBTree = (props) => {
                 <CssBaseline />
                 <Grid container direction="row" spacing={2}>
                     <Grid item xs={4}>
-                        <Box style={{maxHeight: 400, minHeight: 300, overflowY: 'scroll'}} className={styles.app}>
-                            
+                        <Box style={{ maxHeight: 400, minHeight: 300, overflowY: 'scroll' }} className={styles.app}>
+
                             <Tree
                                 tree={treeData}
                                 rootId={-1}
@@ -163,7 +170,7 @@ const QBTree = (props) => {
                     <Grid item xs={8}>
                         {selectedNode && <QuestionEditor
                             selectedNode={selectedNode}
-                            onNameChange={handleQuestionNameChange}
+                            onFieldChange={handleFieldChange}
                             onTextChange={handleQuestionTextChange} />}
                     </Grid>
                 </Grid>
