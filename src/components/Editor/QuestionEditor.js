@@ -1,8 +1,10 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Editor } from "@tinymce/tinymce-react";
+import {Typography} from "@mui/material";
 import styles from "./QuestionEditor.module.css";
 
 export default function QuestionEditor(props) {
+
 
     const editorRef = useRef(null);
     const log = () => {
@@ -11,10 +13,16 @@ export default function QuestionEditor(props) {
         }
     };
 
+
     const questionText = props.selectedNode?.data.question.question_text ?? <p>This is default text.</p>
-    const questionName = () => {
-        return props.selectedNode?.text ?? "Question";
-    }
+    //const questionName = props.selectedNode?.text ?? "Question";
+
+    const [questionName, setQuestionName] = useState(props.selectedNode?.text ?? "Question");
+
+    useEffect(() => {
+        setQuestionName(props.selectedNode?.text);
+
+    }, [props.selectedNode]);
 
     const questionType = () => {
         if (props.selectedNode) {
@@ -45,11 +53,9 @@ export default function QuestionEditor(props) {
 
     return (
         <>
-            <div>
-                <h5>{questionType()}</h5>
-            </div>
+            <Typography variant="h6">{questionType()}</Typography>
             {!props.selectedNode.droppable &&
-                <p>For more information on this question type, please consult
+                <p>For more information on this question type, please consult 
                     <a href="https://docs.moodle.org/310/en/Description_question_type"
                         target="_blank">the official Moodle documentation.
                     </a>
@@ -57,8 +63,11 @@ export default function QuestionEditor(props) {
             }
             <input
                 type="text"
-                defaultValue={questionName()}
-                onChange={props.onNameChange} />
+                value={questionName}
+                onChange={(e) => {
+                    setQuestionName(e.target.value);
+                    props.onNameChange(e);                
+                }} />
             {!props.selectedNode.droppable &&
                 <Editor
                     onInit={(evt, editor) => (editorRef.current = editor)}

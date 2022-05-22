@@ -1,6 +1,6 @@
 import "../App.css";
 import { useState } from "react";
-import { Grid } from "@mui/material";
+import { Grid, Typography } from "@mui/material";
 import FileTextArea from "../components/FileTextArea";
 import { makeStyles } from "@material-ui/styles";
 import QuestionBankProvider from "../store/QuestionBankProvider";
@@ -36,10 +36,10 @@ export default function Home() {
 
     return (
         <QuestionBankProvider>
-            <Grid container direction="row" spacing={2}>
+            <Grid container direction="row" spacing={1}>
                 <Grid item xs={4}>
                     <div className={classes.container}>
-                        <h3 className="title">Import</h3>
+                    <Typography variant="h5" style={{fontWeight: 600}}>Import</Typography>
 
                         <FileTextArea className={classes.textarea} file={file} />
                     </div>

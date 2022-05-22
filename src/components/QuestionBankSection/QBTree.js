@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Grid } from "@mui/material";
+import { Grid, Box } from "@mui/material";
 import { Tree } from "@minoru/react-dnd-treeview";
 import defaultTree from "./defaultTree.json";
 import { ThemeProvider, CssBaseline } from "@mui/material";
@@ -11,8 +11,8 @@ import { loadXMLFile } from "./UtilityFunctions/loadXMLFile.js";
 import { postLoadCleanUp } from "./UtilityFunctions/postLoadCleanUp";
 import { updateQuestionCategories } from "./UtilityFunctions/updateQuestionCategories.js";
 import { getDumCatKey } from "./UtilityFunctions/getDumCatKey";
-import EditorSection from "../Editor/EditorSection";
 import {copyNode} from "./UtilityFunctions/helper";
+import QuestionEditor from "../Editor/QuestionEditor";
 
 const QBTree = (props) => {
     const [treeData, setTreeData] = useState(defaultTree);
@@ -25,16 +25,15 @@ const QBTree = (props) => {
         setSelectedNode(node);
     };
 
-    const handleQuestionNameChange = (value) => {
-        const newTree = treeData.map((node) => {
-
-            console.log("value is: " + value.target.value);
+    const handleQuestionNameChange = (e) => {
+        const newTree = treeData.map((node) => {       
 
             if (node.id === selectedNode.id) {
+                console.log("value is: " + e.target.value);
             
-                let newNode = copyNode(node);
-                newNode.text = value.target.value;
-                newNode.data.question.name = value.target.value;
+                const newNode = copyNode(node);
+                newNode.text = e.target.value;
+                newNode.data.question.name = e.target.value;
 
                 return newNode;
             }
@@ -134,16 +133,9 @@ const QBTree = (props) => {
             <ThemeProvider theme={treeTheme}>
                 <CssBaseline />
                 <Grid container direction="row" spacing={2}>
-                    <Grid item xs>
-                        <div className={styles.app}>
-                            <div className={styles.current}>
-                                <p>
-                                    Current node:{" "}
-                                    <span className={styles.currentLabel}>
-                                        {selectedNode ? selectedNode.text : "none"}
-                                    </span>
-                                </p>
-                            </div>
+                    <Grid item xs={4}>
+                        <Box style={{maxHeight: 400, minHeight: 300, overflowY: 'scroll'}} className={styles.app}>
+                            
                             <Tree
                                 tree={treeData}
                                 rootId={-1}
@@ -166,12 +158,11 @@ const QBTree = (props) => {
                                 sort={false}
                                 insertDroppableFirst={false}
                             />
-                        </div>
+                        </Box>
                     </Grid>
-                    <Grid item xs>
-                        {selectedNode && <EditorSection
+                    <Grid item xs={8}>
+                        {selectedNode && <QuestionEditor
                             selectedNode={selectedNode}
-                            setSelectedNode={setSelectedNode}
                             onNameChange={handleQuestionNameChange}
                             onTextChange={handleQuestionTextChange} />}
                     </Grid>

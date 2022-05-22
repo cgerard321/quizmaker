@@ -1,4 +1,5 @@
-import { Box, Button } from "@mui/material";
+import { Box, Button, Tooltip } from "@mui/material";
+import { AiOutlineUpload } from "react-icons/ai";
 
 export default function UploadButton(props) {
     function changeHandler(event) {
@@ -16,11 +17,21 @@ export default function UploadButton(props) {
     }
 
     return (
-        <Box mt={5}>
-            <Button variant="contained" component="label">
-                Upload File
-                <input type="file" onChange={changeHandler} hidden />
-            </Button>
+        <Box mt={1}>
+            <Tooltip title={"Upload a file"} placement="top" arrow>
+                <Button variant="outlined" size="small" component="label" aria-label="upload a file"
+                    style={{
+                        maxWidth: "50px",
+                        maxHeight: "50px",
+                        minWidth: "30px",
+                        minHeight: "30px",
+                        color: 'black',
+                        borderColor: 'black'
+                    }}>
+                    <AiOutlineUpload />
+                    <input type="file" onChange={changeHandler} hidden />
+                </Button>
+            </Tooltip>
         </Box>
     );
 }
