@@ -1,11 +1,10 @@
 import "../App.css";
 import { useState } from "react";
-import { Grid } from "@mui/material";
+import { Grid, Typography } from "@mui/material";
 import FileTextArea from "../components/FileTextArea";
 import { makeStyles } from "@material-ui/styles";
 import QuestionBankProvider from "../store/QuestionBankProvider";
 import QuestionBankSection from "../components/QuestionBankSection/QuestionBankSection";
-import EditorSection from "../components/Editor/EditorSection";
 
 const useStyles = makeStyles({
     container: {
@@ -33,17 +32,19 @@ export default function Home() {
     const [file, setFile] = useState("nothing to display");
     //
 
+
+
     return (
         <QuestionBankProvider>
-            <Grid container direction="row" spacing={2}>
-                <Grid item xs>
+            <Grid container direction="row" spacing={1}>
+                <Grid item xs={4}>
                     <div className={classes.container}>
-                        <h3 className="title">Import</h3>
+                    <Typography variant="h5" style={{fontWeight: 600}}>Import</Typography>
 
                         <FileTextArea className={classes.textarea} file={file} />
                     </div>
                 </Grid>
-                <Grid item xs>
+                <Grid item xs={8}>
                     <div className={classes.container}>
                         <QuestionBankSection
                             setFile={setFile}
@@ -53,11 +54,7 @@ export default function Home() {
                         />
                     </div>
                 </Grid>
-                <Grid item xs>
-                    <div className={classes.container}>
-                        <EditorSection />
-                    </div>
-                </Grid>
+                
             </Grid>
         </QuestionBankProvider>
     );
