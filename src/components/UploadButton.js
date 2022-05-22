@@ -1,5 +1,5 @@
 import { Box, Button, Tooltip } from "@mui/material";
-import { AiOutlineUpload } from "react-icons/ai";
+import { AiOutlineUpload, AiFillFolderOpen } from "react-icons/ai";
 
 export default function UploadButton(props) {
     function changeHandler(event) {
@@ -28,7 +28,7 @@ export default function UploadButton(props) {
                         color: 'black',
                         borderColor: 'black'
                     }}>
-                    <AiOutlineUpload />
+                    <AiFillFolderOpen />
                     <input type="file" onChange={changeHandler} hidden />
                 </Button>
             </Tooltip>
