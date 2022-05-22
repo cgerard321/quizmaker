@@ -1,6 +1,16 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Editor } from "@tinymce/tinymce-react";
-import { Typography, TextField, Box } from "@mui/material";
+import {
+    Typography,
+    TextField,
+    Box,
+    Table,
+    TableContainer,
+    TableRow,
+    TableCell,
+    TableHead,
+    TableBody
+} from "@mui/material";
 import styles from "./QuestionEditor.module.css";
 
 export default function QuestionEditor(props) {
@@ -138,6 +148,49 @@ export default function QuestionEditor(props) {
                         }} />
                 </Box>
             }
+
+            <TableContainer>
+                <Table >
+                    <TableHead>
+                        <TableRow>
+                            <TableCell width="10%">#</TableCell>
+                            <TableCell width="40%">Choices</TableCell>
+                            <TableCell width="40%">Feedback</TableCell>
+                            <TableCell width="10%">Value</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        <TableRow>
+                            <TableCell>
+                                <TextField
+                                    variant="outlined"
+                                    placeholder="1"
+                                    size="small" />
+                            </TableCell>
+                            <TableCell>
+                                <TextField
+                                    variant="outlined"
+                                    placeholder="2"
+                                    size="small" />
+                            </TableCell>
+                            <TableCell>
+                                <TextField
+                                    variant="outlined"
+                                    placeholder="3"
+                                    size="small" />
+                            </TableCell>
+                            <TableCell>
+                                <TextField
+                                    variant="outlined"
+                                    placeholder="4"
+                                    size="small" />
+                            </TableCell>
+                        </TableRow>
+
+                    </TableBody>
+                </Table>
+            </TableContainer>
+
         </>
     );
 }
