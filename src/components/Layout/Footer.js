@@ -6,7 +6,7 @@ const Footer = (props) => {
     return (
         <Fragment>
             <footer className={classes.footer}>
-                <Copyright websiteName={"QuizMaker"} copyrightYear={new Date().getFullYear()} />
+                <Copyright websiteName={"Christine Gerard and Thomas Lornsen,"} copyrightYear={new Date().getFullYear()} />
             </footer>
         </Fragment>
     );

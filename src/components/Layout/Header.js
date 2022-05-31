@@ -5,7 +5,7 @@ const Header = (props) => {
     return (
         <Fragment>
             <header className={classes.header}>
-                <h1>QuizMaker</h1>
+                <h1>QuizMaker V2.0</h1>
             </header>
         </Fragment>
     );
