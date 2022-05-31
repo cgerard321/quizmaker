@@ -64,6 +64,9 @@ export function loadXMLFile(questionbank, myFile) {
                 break;
             }
             case "truefalse": {
+                //TODO: later clean this up by keeping only choicesFull and removing choices, feedback, and value arrays
+                //TODO: also clean this up by using the optional chaining ?. operator instead of these if/else blocks
+
                 console.log("question.type is 'truefalse'");
                 question.name = xmlQList[i].getElementsByTagName("text")[0].firstChild.nodeValue;
                 question.question_text = xmlQList[i]
@@ -93,7 +96,13 @@ export function loadXMLFile(questionbank, myFile) {
 
                 let choices = xmlQList[i].getElementsByTagName("answer");
 
+                
                 for (let choice_nr = 0; choice_nr < choices.length; choice_nr++) {
+
+                    let choicesObject = {"text": "",
+                                      "feedback": "",
+                                      "value": 0,
+                                    }
                     if (
                         choices[choice_nr].getElementsByTagName("text")[0] &&
                         choices[choice_nr].getElementsByTagName("text")[0].childNodes[0]
@@ -103,14 +112,17 @@ export function loadXMLFile(questionbank, myFile) {
                             continue;
                         } else {
                             question.choices.push(
-                                choices[choice_nr].getElementsByTagName("text")[0].childNodes[0].nodeValue,
+                                choices[choice_nr].getElementsByTagName("text")[0].childNodes[0].nodeValue
                             );
+                            choicesObject.text = choices[choice_nr].getElementsByTagName("text")[0].childNodes[0].nodeValue;
                         }
 
                     if (choices[choice_nr].getAttribute("fraction")) {
                         question.value.push(choices[choice_nr].getAttribute("fraction"));
+                        choicesObject.value = choices[choice_nr].getAttribute("fraction")
                     } else {
                         question.value.push(0);
+                        choicesObject.text = 0;
                     }
 
                     if (
@@ -118,9 +130,12 @@ export function loadXMLFile(questionbank, myFile) {
                         choices[choice_nr].getElementsByTagName("feedback")[0].childNodes[0]
                     ) {
                         question.feedback.push(
-                            choices[choice_nr].getElementsByTagName("feedback")[0].childNodes[0].nodeValue,
+                            choices[choice_nr].getElementsByTagName("feedback")[0].childNodes[0].nodeValue
                         );
+                        choicesObject.feedback = choices[choice_nr].getElementsByTagName("feedback")[0].childNodes[0].nodeValue;
                     }
+                    question.choicesFull.push(choicesObject);
+                    console.log("Choices are: " + choicesObject);
                 }
                 questionbank.push(question); //store the imported question in the database
                 break;

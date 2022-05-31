@@ -5,6 +5,7 @@ export const defaultQuestion = {
     name: "Default question",
     question_text: "This is your question text",
     tags: [],
+    choicesFull: [],
     choices: [],
     feedback: [],
     value: [],
