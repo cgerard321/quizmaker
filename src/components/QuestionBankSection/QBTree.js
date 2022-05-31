@@ -41,6 +41,46 @@ const QBTree = (props) => {
                     case "penalty":
                         newNode.data.question.penalty = e.target.value;
                         break;
+                    default:
+                        console.log("Event for choices:")
+                        console.log(e);
+
+                }
+                return newNode;
+            }
+            return node;
+        });
+        setTreeData(newTree);
+    }
+
+    const handleChoiceChange = (e, index) => {
+        const newTree = treeData.map((node) => {
+
+            if (node.id === selectedNode.id) {
+                const newNode = copyNode(node);
+                switch (e.target.name) {
+                    case "choiceText":
+                        newNode.data.question.choicesFull[index].text = e.target.value;
+                        console.log("new choice text for index: " + index);
+                        console.log(e.target.value);
+                        break;
+
+                    case "choiceFeedback":
+                        newNode.data.question.choicesFull[index].feedback = e.target.value;
+                        console.log("new choice feedback for index: " + index);
+                        console.log(e.target.value);
+                        break;
+
+                    case "choiceValue":
+                        newNode.data.question.choicesFull[index].value = e.target.value;
+                        console.log("new choice value for index: " + index);
+                        console.log(e.target.value);
+                        break;
+
+                    default:
+                        console.log("Event for choices:")
+                        console.log(e);
+
                 }
                 return newNode;
             }
@@ -171,7 +211,8 @@ const QBTree = (props) => {
                         {selectedNode && <QuestionEditor
                             selectedNode={selectedNode}
                             onFieldChange={handleFieldChange}
-                            onTextChange={handleQuestionTextChange} />}
+                            onTextChange={handleQuestionTextChange}
+                            onChoiceChange={handleChoiceChange} />}
                     </Grid>
                 </Grid>
             </ThemeProvider>

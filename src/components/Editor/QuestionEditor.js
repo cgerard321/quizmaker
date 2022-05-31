@@ -1,7 +1,18 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Editor } from "@tinymce/tinymce-react";
-import { Typography, TextField, Box } from "@mui/material";
+import {
+    Typography,
+    TextField,
+    Box,
+    Table,
+    TableContainer,
+    TableRow,
+    TableCell,
+    TableHead,
+    TableBody
+} from "@mui/material";
 import styles from "./QuestionEditor.module.css";
+import { ItemTypes } from "@minoru/react-dnd-treeview";
 
 export default function QuestionEditor(props) {
 
@@ -20,12 +31,17 @@ export default function QuestionEditor(props) {
     const [questionName, setQuestionName] = useState(props.selectedNode?.text ?? "Question");
     const [defaultGrade, setDefaultGrade] = useState(props.selectedNode?.data.question.defaultGrade ?? 0.00);
     const [penalty, setPenalty] = useState(props.selectedNode?.data.question.penalty ?? 0.00);
+    const [choices, setChoices] = useState(props.selectedNode?.data.question.choicesFull ?? [{
+        text: "",
+        feedback: "",
+        value: 0
+    }]);
 
     useEffect(() => {
         setQuestionName(props.selectedNode?.text);
         setDefaultGrade(props.selectedNode?.data.question.default_grade);
         setPenalty(props.selectedNode?.data.question.penalty);
-
+        setChoices(props.selectedNode?.data.question.choicesFull);
     }, [props.selectedNode]);
 
     const questionType = () => {
@@ -138,6 +154,79 @@ export default function QuestionEditor(props) {
                         }} />
                 </Box>
             }
+
+            <TableContainer>
+                <Table >
+                    <TableHead>
+                        <TableRow>
+                            <TableCell width="10%">#</TableCell>
+                            <TableCell width="30%">Choices</TableCell>
+                            <TableCell width="30%">Feedback</TableCell>
+                            <TableCell width="20%">Value</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {choices && choices.map((row, i) => (
+                            <TableRow key={i}>
+                                <TableCell>
+                                    {i + 1}
+                                </TableCell>
+                                <TableCell>
+                                    <TextField
+                                        type="text"
+                                        id="choiceText"
+                                        name="choiceText"
+                                        value={row.text}
+                                        size="small"
+                                        onChange={(e) => {
+                                            setChoices((prevChoices) => {
+                                                prevChoices[i].text = e.target.value;
+                                                return prevChoices;
+                                            });
+                                            props.onChoiceChange(e, i);
+                                        }}
+                                        />
+                                </TableCell>
+                                <TableCell>
+                                    <TextField
+                                        type="text"
+                                        id="choiceFeedback"
+                                        name="choiceFeedback"
+                                        value={row.feedback}
+                                        size="small"
+                                        onChange={(e) => {
+                                            setChoices((prevChoices) => {
+                                                prevChoices[i].feedback = e.target.value;
+                                                return prevChoices;
+                                            });
+                                            props.onChoiceChange(e, i);
+                                        }} />
+                                </TableCell>
+                                <TableCell>
+                                    <TextField
+                                        type="number"
+                                        id="choiceValue"
+                                        name="choiceValue"
+                                        value={row.value}
+                                        size="small" 
+                                        inputProps={{
+                                            min: 0,
+                                            max: 100,
+                                            step: "1"
+                                        }}
+                                        onChange={(e) => {
+                                            setChoices((prevChoices) => {
+                                                prevChoices[i].value = e.target.value;
+                                                return prevChoices;
+                                            });
+                                            props.onChoiceChange(e, i);
+                                        }}/>
+                                </TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </TableContainer>
         </>
     );
 }
