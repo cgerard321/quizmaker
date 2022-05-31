@@ -141,7 +141,7 @@ export function loadXMLFile(questionbank, myFile) {
                 break;
             }
             case "multichoice": {
-                console.log("question.type is 'truefalse'");
+                console.log("question.type is 'multichoice'");
                 question.name = xmlQList[i].getElementsByTagName("text")[0].firstChild.nodeValue;
                 question.question_text = xmlQList[i]
                     .getElementsByTagName("questiontext")[0]
@@ -176,6 +176,10 @@ export function loadXMLFile(questionbank, myFile) {
 
                 let choices = xmlQList[i].getElementsByTagName("answer");
                 for (let choice_nr = 0; choice_nr < choices.length; choice_nr++) {
+                    let choicesObject = {"text": "",
+                    "feedback": "",
+                    "value": 0,
+                  }
                     if (
                         choices[choice_nr].getElementsByTagName("text")[0] &&
                         choices[choice_nr].getElementsByTagName("text")[0].childNodes[0]
@@ -187,19 +191,29 @@ export function loadXMLFile(questionbank, myFile) {
                             question.choices.push(
                                 choices[choice_nr].getElementsByTagName("text")[0].childNodes[0].nodeValue,
                             );
+                            choicesObject.text = choices[choice_nr].getElementsByTagName("text")[0].childNodes[0].nodeValue;
                         }
 
-                    if (choices[choice_nr].getAttribute("fraction"))
+                    if (choices[choice_nr].getAttribute("fraction")) {
                         question.value.push(choices[choice_nr].getAttribute("fraction"));
-                    else question.value.push(0);
+                        choicesObject.value = choices[choice_nr].getAttribute("fraction");
+                    }                    
+                    else {
+                        question.value.push(0);
+                        choicesObject.value = 0;  //can be removed since this is the default value.
+                    }
 
                     if (
                         choices[choice_nr].getElementsByTagName("feedback")[0] &&
                         choices[choice_nr].getElementsByTagName("feedback")[0].childNodes[0]
-                    )
+                    ) {
                         question.feedback.push(
                             choices[choice_nr].getElementsByTagName("feedback")[0].childNodes[0].nodeValue,
                         );
+                        choicesObject.feedback = choices[choice_nr].getElementsByTagName("feedback")[0].childNodes[0].nodeValue;
+                    }
+
+                    question.choicesFull.push(choicesObject);  
                 }
 
                 questionbank.push(question); //store the imported question in the database

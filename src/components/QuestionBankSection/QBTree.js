@@ -13,6 +13,7 @@ import { updateQuestionCategories } from "./UtilityFunctions/updateQuestionCateg
 import { getDumCatKey } from "./UtilityFunctions/getDumCatKey";
 import { copyNode } from "./UtilityFunctions/helper";
 import QuestionEditor from "../Editor/QuestionEditor";
+import * as Constants from "../../constants/questionBankConstants.js";
 
 const QBTree = (props) => {
     const [treeData, setTreeData] = useState(defaultTree);
@@ -40,6 +41,17 @@ const QBTree = (props) => {
                         break;
                     case "penalty":
                         newNode.data.question.penalty = e.target.value;
+                        break;
+                    case "singleAnswer":
+                        console.log("SingleAnswer");    
+                    console.log(e.target.value);
+                        newNode.data.question.single_answer = e.target.checked;
+                        break;
+                    case "shuffleAnswers":
+                        newNode.data.question.shuffle_answers = e.target.checked;
+                        break;
+                    case "numbering":
+                        newNode.data.question.numbering = Constants.answer_numbering.indexOf(e.target.value);
                         break;
                     default:
                         console.log("Event for choices:")
