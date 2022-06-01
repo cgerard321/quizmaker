@@ -20,6 +20,8 @@ const QBTree = (props) => {
     //const handleDrop = (newTree) => setTreeData(newTree);
     const [selectedNode, setSelectedNode] = useState(null);
 
+
+
     const handleSelect = (node) => {
         console.log("Current node: " + node.text);
         console.log(node);
@@ -43,8 +45,8 @@ const QBTree = (props) => {
                         newNode.data.question.penalty = e.target.value;
                         break;
                     case "singleAnswer":
-                        console.log("SingleAnswer");    
-                    console.log(e.target.value);
+                        console.log("SingleAnswer");
+                        console.log(e.target.value);
                         newNode.data.question.single_answer = e.target.checked;
                         break;
                     case "shuffleAnswers":
@@ -65,7 +67,7 @@ const QBTree = (props) => {
         setTreeData(newTree);
     }
 
-    const handleChoiceChange = (e, index) => {
+    const handleChoiceEdit = (e, index) => {
         const newTree = treeData.map((node) => {
 
             if (node.id === selectedNode.id) {
@@ -85,9 +87,12 @@ const QBTree = (props) => {
 
                     case "choiceValue":
                         newNode.data.question.choicesFull[index].value = e.target.value;
+
                         console.log("new choice value for index: " + index);
                         console.log(e.target.value);
                         break;
+
+
 
                     default:
                         console.log("Event for choices:")
@@ -100,6 +105,46 @@ const QBTree = (props) => {
         });
         setTreeData(newTree);
     }
+
+    const handleChoiceTableModify = (action, choices) => {
+        const newTree = treeData.map((node) => {
+            if (node.id === selectedNode.id) {
+                const newNode = copyNode(node);
+
+                switch (action) {
+
+                    case "choiceDelete":
+                        console.log("Choices received");
+                        console.log(choices);
+                        console.log("Choices before deletion")
+                        newNode.data.question.choicesFull.splice(0, newNode.data.question.choicesFull.length);
+                        newNode.data.question.choicesFull = choices;
+                        console.log("choice after deletion");
+                        console.log(newNode.data.question.choicesFull);
+                        break;
+
+                    case "choiceAdd":
+                        console.log("Choices received");
+                        console.log(choices);
+                        console.log("Choices before addition")
+                        console.log(newNode.data.question.choicesFull);
+                        newNode.data.question.choicesFull.splice(0, newNode.data.question.choicesFull.length);
+                        newNode.data.question.choicesFull = choices;
+                        console.log("Choices after addition");
+                        console.log(newNode.data.question.choicesFull);
+                        break;
+
+                    default:
+                        console.log("No action");
+
+                }
+                return newNode;
+            }
+            return node;
+        });
+        setTreeData(newTree);
+    }
+
 
     const handleQuestionTextChange = (value) => {
         const newTree = treeData.map((node) => {
@@ -193,7 +238,7 @@ const QBTree = (props) => {
                 <CssBaseline />
                 <Grid container direction="row" spacing={2}>
                     <Grid item xs={4}>
-                        <Box style={{ maxHeight: 400, minHeight: 300, overflowY: 'scroll' }} className={styles.app}>
+                        <Box style={{ maxHeight: 400, overflowY: 'scroll' }} className={styles.app}>
 
                             <Tree
                                 tree={treeData}
@@ -219,12 +264,13 @@ const QBTree = (props) => {
                             />
                         </Box>
                     </Grid>
-                    <Grid item xs={8}>
+                    <Grid item xs={8} >
                         {selectedNode && <QuestionEditor
                             selectedNode={selectedNode}
                             onFieldChange={handleFieldChange}
                             onTextChange={handleQuestionTextChange}
-                            onChoiceChange={handleChoiceChange} />}
+                            onChoiceEdit={handleChoiceEdit}
+                            onChoiceTableModify={handleChoiceTableModify} />}
                     </Grid>
                 </Grid>
             </ThemeProvider>
