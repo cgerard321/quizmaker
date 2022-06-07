@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { makeStyles } from '@material-ui/core/styles'
 import { Grid, Box } from "@mui/material";
 import { Tree } from "@minoru/react-dnd-treeview";
 import defaultTree from "./defaultTree.json";
@@ -13,11 +14,36 @@ import { updateQuestionCategories } from "./UtilityFunctions/updateQuestionCateg
 import { getDumCatKey } from "./UtilityFunctions/getDumCatKey";
 import { copyNode } from "./UtilityFunctions/helper";
 import QuestionEditor from "../Editor/QuestionEditor";
+import * as Constants from "../../constants/questionBankConstants.js";
+
+// const useStyles = makeStyles({
+//     container: {
+//         marginTop: 3, //leave space for header
+//         marginRight: 6,
+//         marginLeft: 6,
+//         height: "85vh", // So that grids go all the way down to before footer
+//         minHeight: "25vh", // Give minimum height to a div
+//         //border: "1px solid black",
+//         width: "100%",
+//         fontSize: 20,
+//         textAlign: "left",
+//         paddingTop: 5,
+//         marginBottom: 100,
+//     },
+//     containerTall: {
+//         minHeight: 250, // This div has higher minimum height
+//     },
+// });
 
 const QBTree = (props) => {
+
+    //const classes = useStyles();
+
     const [treeData, setTreeData] = useState(defaultTree);
     //const handleDrop = (newTree) => setTreeData(newTree);
     const [selectedNode, setSelectedNode] = useState(null);
+
+
 
     const handleSelect = (node) => {
         console.log("Current node: " + node.text);
@@ -41,6 +67,17 @@ const QBTree = (props) => {
                     case "penalty":
                         newNode.data.question.penalty = e.target.value;
                         break;
+                    case "singleAnswer":
+                        console.log("SingleAnswer");
+                        console.log(e.target.value);
+                        newNode.data.question.single_answer = e.target.checked;
+                        break;
+                    case "shuffleAnswers":
+                        newNode.data.question.shuffle_answers = e.target.checked;
+                        break;
+                    case "numbering":
+                        newNode.data.question.numbering = Constants.answer_numbering.indexOf(e.target.value);
+                        break;
                     default:
                         console.log("Event for choices:")
                         console.log(e);
@@ -53,7 +90,7 @@ const QBTree = (props) => {
         setTreeData(newTree);
     }
 
-    const handleChoiceChange = (e, index) => {
+    const handleChoiceEdit = (e, index) => {
         const newTree = treeData.map((node) => {
 
             if (node.id === selectedNode.id) {
@@ -73,9 +110,12 @@ const QBTree = (props) => {
 
                     case "choiceValue":
                         newNode.data.question.choicesFull[index].value = e.target.value;
+
                         console.log("new choice value for index: " + index);
                         console.log(e.target.value);
                         break;
+
+
 
                     default:
                         console.log("Event for choices:")
@@ -88,6 +128,46 @@ const QBTree = (props) => {
         });
         setTreeData(newTree);
     }
+
+    const handleChoiceTableModify = (action, choices) => {
+        const newTree = treeData.map((node) => {
+            if (node.id === selectedNode.id) {
+                const newNode = copyNode(node);
+
+                switch (action) {
+
+                    case "choiceDelete":
+                        console.log("Choices received");
+                        console.log(choices);
+                        console.log("Choices before deletion")
+                        newNode.data.question.choicesFull.splice(0, newNode.data.question.choicesFull.length);
+                        newNode.data.question.choicesFull = choices;
+                        console.log("choice after deletion");
+                        console.log(newNode.data.question.choicesFull);
+                        break;
+
+                    case "choiceAdd":
+                        console.log("Choices received");
+                        console.log(choices);
+                        console.log("Choices before addition")
+                        console.log(newNode.data.question.choicesFull);
+                        newNode.data.question.choicesFull.splice(0, newNode.data.question.choicesFull.length);
+                        newNode.data.question.choicesFull = choices;
+                        console.log("Choices after addition");
+                        console.log(newNode.data.question.choicesFull);
+                        break;
+
+                    default:
+                        console.log("No action");
+
+                }
+                return newNode;
+            }
+            return node;
+        });
+        setTreeData(newTree);
+    }
+
 
     const handleQuestionTextChange = (value) => {
         const newTree = treeData.map((node) => {
@@ -179,11 +259,27 @@ const QBTree = (props) => {
         <StylesProvider injectFirst>
             <ThemeProvider theme={treeTheme}>
                 <CssBaseline />
-                <Grid container direction="row" spacing={2}>
-                    <Grid item xs={4}>
-                        <Box style={{ maxHeight: 400, minHeight: 300, overflowY: 'scroll' }} className={styles.app}>
+                <div
+                    style={{
+                        //backgroundColor: "orange",
+                        height: "85%",
+                        display: "flex",
 
-                            <Tree
+                    }}>
+                    <Grid container direction={'row'} spacing={2} style={{
+                        //backgroundColor: "yellow",
+                        minHeight: "100%",
+                        maxHeight: "100%",
+                        maxWidth: "100%",
+                        marginLeft: '0.25vw',
+                        overflowY: "hidden"
+                    }}>
+                        <Grid item xs={4} style={{
+                            //backgroundColor: "lightgreen",
+                            maxHeight: "100%",
+                            overflowY: "auto",
+                        }}>
+                            <Tree 
                                 tree={treeData}
                                 rootId={-1}
                                 render={(node: NodeModel<CustomData>,
@@ -205,16 +301,21 @@ const QBTree = (props) => {
                                 sort={false}
                                 insertDroppableFirst={false}
                             />
-                        </Box>
+                        </Grid>
+                        <Grid item xs={8} style={{
+                            //backgroundColor: "lightgreen",
+                            maxHeight: "100%",
+                            overflowY: "auto"
+                        }}>
+                            {selectedNode && <QuestionEditor
+                                selectedNode={selectedNode}
+                                onFieldChange={handleFieldChange}
+                                onTextChange={handleQuestionTextChange}
+                                onChoiceEdit={handleChoiceEdit}
+                                onChoiceTableModify={handleChoiceTableModify} />}
+                        </Grid>
                     </Grid>
-                    <Grid item xs={8}>
-                        {selectedNode && <QuestionEditor
-                            selectedNode={selectedNode}
-                            onFieldChange={handleFieldChange}
-                            onTextChange={handleQuestionTextChange}
-                            onChoiceChange={handleChoiceChange} />}
-                    </Grid>
-                </Grid>
+                    </div>
             </ThemeProvider>
         </StylesProvider >
     );

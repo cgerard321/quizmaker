@@ -1,5 +1,8 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Editor } from "@tinymce/tinymce-react";
+import { makeStyles } from "@material-ui/styles";
+import DeleteIcon from '@mui/icons-material/Delete';
+import AddIcon from '@mui/icons-material/Add';
 import {
     Typography,
     TextField,
@@ -9,13 +12,41 @@ import {
     TableRow,
     TableCell,
     TableHead,
-    TableBody
+    TableBody,
+    Paper,
+    FormControlLabel,
+    FormControl,
+    Checkbox,
+    Select,
+    InputLabel,
+    MenuItem,
+    TextareaAutosize
 } from "@mui/material";
 import styles from "./QuestionEditor.module.css";
 import { ItemTypes } from "@minoru/react-dnd-treeview";
+import * as Constants from "../../constants/questionBankConstants.js";
+
+const useStyles = makeStyles({
+    tableCell: {
+        padding: "0px 0px 0px 0px"
+    },
+
+    customTable: {
+        "& .MuiTableCell-sizeSmall": {
+            padding: "0px 0px 0px 0px" // <-- arbitrary value
+        }
+    },
+});
 
 export default function QuestionEditor(props) {
 
+    const defaultChoice = {
+        text: "",
+        feedback: "",
+        value: 0
+    };
+
+    const classes = useStyles();
 
     const editorRef = useRef(null);
     const log = () => {
@@ -31,18 +62,225 @@ export default function QuestionEditor(props) {
     const [questionName, setQuestionName] = useState(props.selectedNode?.text ?? "Question");
     const [defaultGrade, setDefaultGrade] = useState(props.selectedNode?.data.question.defaultGrade ?? 0.00);
     const [penalty, setPenalty] = useState(props.selectedNode?.data.question.penalty ?? 0.00);
-    const [choices, setChoices] = useState(props.selectedNode?.data.question.choicesFull ?? [{
-        text: "",
-        feedback: "",
-        value: 0
-    }]);
+    const [singleAnswer, setSingleAnswer] = useState(props.selectedNode?.data.question.single_answer ?? false);
+    const [shuffleAnswers, setShuffleAnswers] = useState(props.selectedNode?.data.question.shuffle_answers ?? false);
+    const [numbering, setNumbering] = useState(props.selectedNode?.data.question.numbering ?? Constants.answer_numbering[1]);
+    const [choices, setChoices] = useState(props.selectedNode?.data.question.choicesFull ?? [defaultChoice]);
 
     useEffect(() => {
         setQuestionName(props.selectedNode?.text);
         setDefaultGrade(props.selectedNode?.data.question.default_grade);
         setPenalty(props.selectedNode?.data.question.penalty);
+        setSingleAnswer(props.selectedNode?.data.question.single_answer);
+        setShuffleAnswers(props.selectedNode?.data.question.shuffle_answers);
+        setNumbering(props.selectedNode?.data.question.numbering)
         setChoices(props.selectedNode?.data.question.choicesFull);
     }, [props.selectedNode]);
+
+    const tableColumns = () => {
+        if (props.selectedNode) {
+            if (props.selectedNode?.data.questionType === "multichoice") {
+                return (
+                    <TableHead>
+                        <TableRow>
+                            <TableCell >#</TableCell>
+                            <TableCell align="center">Choices</TableCell>
+                            <TableCell align="center">Feedback</TableCell>
+                            <TableCell align="center">Value</TableCell>
+                            <TableCell />
+                            <TableCell />
+                        </TableRow>
+                    </TableHead>
+                )
+            }
+            else if (props.selectedNode?.data.questionType === "truefalse") {
+                return (
+                    <TableHead>
+                        <TableRow>
+                            <TableCell >#</TableCell>
+                            <TableCell align="center">Choices</TableCell>
+                            <TableCell align="center">Feedback</TableCell>
+                            <TableCell align="center">Value</TableCell>
+                        </TableRow>
+                    </TableHead>
+                )
+            }
+        }
+    }
+
+    const tableRows = () => {
+        if (props.selectedNode) {
+            if (props.selectedNode?.data.questionType === "multichoice") {
+                return (
+                    <TableBody>
+                        {choices && choices.map((row, i) =>
+                            <TableRow key={i}  >
+                                <TableCell component="th" scope="row" >
+                                    {i + 1}
+                                </TableCell>
+                                <TableCell align="right">
+                                    <TextareaAutosize
+                                        type="text"
+                                        id="choiceText"
+                                        name="choiceText"
+                                        value={row.text}
+                                        maxRows={2.5}
+                                        minRows={2.5}
+                                        variant="outlined"
+                                        style={{ minWidth: 250 }}
+                                        resize="both"
+                                        onChange={(e) => {
+                                            setChoices((prevChoices) => {
+                                                prevChoices[i].text = e.target.value;
+                                                return prevChoices;
+                                            });
+                                            props.onChoiceEdit(e, i, "choiceText");
+                                        }}
+                                    />
+                                </TableCell>
+                                <TableCell align="right">
+                                    <TextareaAutosize
+                                        type="text"
+                                        id="choiceFeedback"
+                                        name="choiceFeedback"
+                                        value={row.feedback}
+                                        size="small"
+                                        maxRows={2.5}
+                                        minRows={2.5}
+                                        onChange={(e) => {
+                                            setChoices((prevChoices) => {
+                                                prevChoices[i].feedback = e.target.value;
+                                                return prevChoices;
+                                            });
+                                            props.onChoiceEdit(e, i, "choiceFeedback");
+                                        }} />
+                                </TableCell>
+                                <TableCell align="right">
+                                    <TextField
+                                        type="number"
+                                        id="choiceValue"
+                                        name="choiceValue"
+                                        value={row.value}
+                                        sx={{ mx: 0.5 }}
+                                        size="small"
+                                        inputProps={{
+                                            min: 0,
+                                            max: 100,
+                                            step: "1"
+                                        }}
+                                        onChange={(e) => {
+                                            setChoices((prevChoices) => {
+                                                prevChoices[i].value = e.target.value;
+                                                return prevChoices;
+                                            });
+                                            props.onChoiceEdit(e, i, "choiceValue");
+                                        }} />
+                                </TableCell>
+                                <TableCell
+                                    onClick={(e) => {
+                                        const newChoices = [];
+                                        setChoices((prevChoices) => {
+                                            prevChoices.splice(i, 0, defaultChoice);
+                                            console.log("Current state of prevChoices");
+                                            console.log(prevChoices);
+                                            newChoices.push(...prevChoices);
+                                            return prevChoices;
+                                        });
+                                        props.onChoiceTableModify("choiceAdd", newChoices);
+                                    }}>
+                                    <AddIcon name="add" />
+                                </TableCell>
+
+                                <TableCell
+                                    onClick={(e) => {
+                                        const newChoices = [];
+                                        setChoices((prevChoices) => {
+                                            console.log("i is: " + i)
+                                            console.log(i);
+                                            prevChoices.splice(i, 1);
+                                            console.log("Current state of prevChoices");
+                                            console.log(prevChoices);
+                                            newChoices.push(...prevChoices);
+                                            return prevChoices;
+                                        });
+                                        props.onChoiceTableModify("choiceDelete", newChoices);
+                                    }}>
+                                    <DeleteIcon name="delete" />
+                                </TableCell>
+                            </TableRow>
+                        )}
+                    </TableBody>
+                )
+            }
+
+            else if (props.selectedNode?.data.questionType === "truefalse") {
+                return (
+                    <TableBody>
+                        {choices && choices.map((row, i) =>
+                            <TableRow key={i}  >
+                                <TableCell component="th" scope="row" >
+                                    {i + 1}
+                                </TableCell>
+                                <TableCell align="center" sx={{minWidth:150}}>
+                                    {row.text
+                                    /* <TextField
+                                        type="text"
+                                        id="choiceText"
+                                        name="choiceText"
+                                        value={row.text}
+                                        variant="outlined"
+                                        size="small"
+                                        style={{ minWidth: 100 }}
+                                        inputProps={
+                                            { readOnly: true, }}
+                                    /> */}
+                                </TableCell>
+                                <TableCell align="right">
+                                    <TextareaAutosize
+                                        type="text"
+                                        id="choiceFeedback"
+                                        name="choiceFeedback"
+                                        value={row.feedback}
+                                        size="small"
+                                        maxRows={2.5}
+                                        minRows={2.5}
+                                        style={{ minWidth: 250 }}
+                                        onChange={(e) => {
+                                            setChoices((prevChoices) => {
+                                                prevChoices[i].feedback = e.target.value;
+                                                return prevChoices;
+                                            });
+                                            props.onChoiceEdit(e, i, "choiceFeedback");
+                                        }} />
+                                </TableCell>
+                                <TableCell align="right">
+                                    <TextField
+                                        type="number"
+                                        id="choiceValue"
+                                        name="choiceValue"
+                                        value={row.value}
+                                        sx={{ mx: 0.5 }}
+                                        size="small"
+                                        inputProps={{
+                                            min: 0,
+                                            max: 100,
+                                            step: "100"
+                                        }}
+                                        onChange={(e) => {
+                                            setChoices((prevChoices) => {
+                                                prevChoices[i].value = e.target.value;
+                                                return prevChoices;
+                                            });
+                                            props.onChoiceEdit(e, i, "choiceValue");
+                                        }} />
+                                </TableCell>
+                            </TableRow>
+                        )}
+                    </TableBody>
+                )
+            }
+        }
+    }
 
     const questionType = () => {
         if (props.selectedNode) {
@@ -99,7 +337,7 @@ export default function QuestionEditor(props) {
                     initialValue={questionText}
                     onEditorChange={props.onTextChange}
                     init={{
-                        height: 250,
+                        height: 200,
                         menubar: false,
                         plugins: [
                             'advlist', 'autolink', 'lists', 'link', 'image', 'charmap',
@@ -154,79 +392,74 @@ export default function QuestionEditor(props) {
                         }} />
                 </Box>
             }
+            {!props.selectedNode.droppable && props.selectedNode.data.questionType === "multichoice" &&
+                <Box
+                    mt={1}
+                    display="flex"
+                    justifyContent="flex-start"
+                    align-items="flex-start">
 
-            <TableContainer>
-                <Table >
-                    <TableHead>
-                        <TableRow>
-                            <TableCell width="10%">#</TableCell>
-                            <TableCell width="30%">Choices</TableCell>
-                            <TableCell width="30%">Feedback</TableCell>
-                            <TableCell width="20%">Value</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {choices && choices.map((row, i) => (
-                            <TableRow key={i}>
-                                <TableCell>
-                                    {i + 1}
-                                </TableCell>
-                                <TableCell>
-                                    <TextField
-                                        type="text"
-                                        id="choiceText"
-                                        name="choiceText"
-                                        value={row.text}
-                                        size="small"
-                                        onChange={(e) => {
-                                            setChoices((prevChoices) => {
-                                                prevChoices[i].text = e.target.value;
-                                                return prevChoices;
-                                            });
-                                            props.onChoiceChange(e, i);
-                                        }}
-                                        />
-                                </TableCell>
-                                <TableCell>
-                                    <TextField
-                                        type="text"
-                                        id="choiceFeedback"
-                                        name="choiceFeedback"
-                                        value={row.feedback}
-                                        size="small"
-                                        onChange={(e) => {
-                                            setChoices((prevChoices) => {
-                                                prevChoices[i].feedback = e.target.value;
-                                                return prevChoices;
-                                            });
-                                            props.onChoiceChange(e, i);
-                                        }} />
-                                </TableCell>
-                                <TableCell>
-                                    <TextField
-                                        type="number"
-                                        id="choiceValue"
-                                        name="choiceValue"
-                                        value={row.value}
-                                        size="small" 
-                                        inputProps={{
-                                            min: 0,
-                                            max: 100,
-                                            step: "1"
-                                        }}
-                                        onChange={(e) => {
-                                            setChoices((prevChoices) => {
-                                                prevChoices[i].value = e.target.value;
-                                                return prevChoices;
-                                            });
-                                            props.onChoiceChange(e, i);
-                                        }}/>
-                                </TableCell>
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </TableContainer>
+                    <FormControlLabel
+                        name="singleAnswer"
+                        control={<Checkbox
+                            checked={singleAnswer}
+                            onChange={(e) => {
+                                setSingleAnswer(e.target.checked);
+                                props.onFieldChange(e);
+                            }} />}
+                        label={
+                            <Typography sx={{ fontSize: 14 }}>
+                                Single Answer
+                            </Typography>}
+                    />
+
+                    <FormControlLabel
+                        name="shuffleAnswers"
+                        control={<Checkbox
+                            checked={shuffleAnswers}
+                            onChange={(e) => {
+                                setShuffleAnswers(e.target.checked);
+                                props.onFieldChange(e);
+                            }} />}
+                        label={
+                            <Typography sx={{ fontSize: 14 }}>
+                                Shuffle Answers
+                            </Typography>}
+                    />
+
+
+                    <TextField
+                        sx={{ width: 100 }}
+                        id="numbering"
+                        name="numbering"
+                        value={Constants.answer_numbering[numbering]}
+                        label="Numbering"
+                        select
+                        size="small"
+                        onChange={(e) => {
+                            setNumbering(Constants.answer_numbering.indexOf(e.target.value));
+                            props.onFieldChange(e);
+                        }}>
+                        {
+                            Constants.answer_numbering.map((type, i) => {
+                                return <MenuItem value={type} key={i}>{type} </MenuItem>
+                            })
+                        }
+                    </TextField>
+                </Box>
+            }
+            {!props.selectedNode.droppable &&
+                (props.selectedNode.data.questionType === "multichoice"
+                    || props.selectedNode.data.questionType === "truefalse")
+                &&
+                <TableContainer sx={{ height: 250, width: '100%' }}>
+                    <Table stickyHeader size="small" sx={{ width: "max-content", height: "max-content" }}>
+                        {tableColumns()}
+                        {tableRows()}
+                    </Table>
+                </TableContainer>
+            }
+
         </>
     );
 }
