@@ -77,6 +77,211 @@ export default function QuestionEditor(props) {
         setChoices(props.selectedNode?.data.question.choicesFull);
     }, [props.selectedNode]);
 
+    const tableColumns = () => {
+        if (props.selectedNode) {
+            if (props.selectedNode?.data.questionType === "multichoice") {
+                return (
+                    <TableHead>
+                        <TableRow>
+                            <TableCell >#</TableCell>
+                            <TableCell align="center">Choices</TableCell>
+                            <TableCell align="center">Feedback</TableCell>
+                            <TableCell align="center">Value</TableCell>
+                            <TableCell />
+                            <TableCell />
+                        </TableRow>
+                    </TableHead>
+                )
+            }
+            else if (props.selectedNode?.data.questionType === "truefalse") {
+                return (
+                    <TableHead>
+                        <TableRow>
+                            <TableCell >#</TableCell>
+                            <TableCell align="center">Choices</TableCell>
+                            <TableCell align="center">Feedback</TableCell>
+                            <TableCell align="center">Value</TableCell>
+                        </TableRow>
+                    </TableHead>
+                )
+            }
+        }
+    }
+
+    const tableRows = () => {
+        if (props.selectedNode) {
+            if (props.selectedNode?.data.questionType === "multichoice") {
+                return (
+                    <TableBody>
+                        {choices && choices.map((row, i) =>
+                            <TableRow key={i}  >
+                                <TableCell component="th" scope="row" >
+                                    {i + 1}
+                                </TableCell>
+                                <TableCell align="right">
+                                    <TextareaAutosize
+                                        type="text"
+                                        id="choiceText"
+                                        name="choiceText"
+                                        value={row.text}
+                                        maxRows={2.5}
+                                        minRows={2.5}
+                                        variant="outlined"
+                                        style={{ minWidth: 250 }}
+                                        resize="both"
+                                        onChange={(e) => {
+                                            setChoices((prevChoices) => {
+                                                prevChoices[i].text = e.target.value;
+                                                return prevChoices;
+                                            });
+                                            props.onChoiceEdit(e, i, "choiceText");
+                                        }}
+                                    />
+                                </TableCell>
+                                <TableCell align="right">
+                                    <TextareaAutosize
+                                        type="text"
+                                        id="choiceFeedback"
+                                        name="choiceFeedback"
+                                        value={row.feedback}
+                                        size="small"
+                                        maxRows={2.5}
+                                        minRows={2.5}
+                                        onChange={(e) => {
+                                            setChoices((prevChoices) => {
+                                                prevChoices[i].feedback = e.target.value;
+                                                return prevChoices;
+                                            });
+                                            props.onChoiceEdit(e, i, "choiceFeedback");
+                                        }} />
+                                </TableCell>
+                                <TableCell align="right">
+                                    <TextField
+                                        type="number"
+                                        id="choiceValue"
+                                        name="choiceValue"
+                                        value={row.value}
+                                        sx={{ mx: 0.5 }}
+                                        size="small"
+                                        inputProps={{
+                                            min: 0,
+                                            max: 100,
+                                            step: "1"
+                                        }}
+                                        onChange={(e) => {
+                                            setChoices((prevChoices) => {
+                                                prevChoices[i].value = e.target.value;
+                                                return prevChoices;
+                                            });
+                                            props.onChoiceEdit(e, i, "choiceValue");
+                                        }} />
+                                </TableCell>
+                                <TableCell
+                                    onClick={(e) => {
+                                        const newChoices = [];
+                                        setChoices((prevChoices) => {
+                                            prevChoices.splice(i, 0, defaultChoice);
+                                            console.log("Current state of prevChoices");
+                                            console.log(prevChoices);
+                                            newChoices.push(...prevChoices);
+                                            return prevChoices;
+                                        });
+                                        props.onChoiceTableModify("choiceAdd", newChoices);
+                                    }}>
+                                    <AddIcon name="add" />
+                                </TableCell>
+
+                                <TableCell
+                                    onClick={(e) => {
+                                        const newChoices = [];
+                                        setChoices((prevChoices) => {
+                                            console.log("i is: " + i)
+                                            console.log(i);
+                                            prevChoices.splice(i, 1);
+                                            console.log("Current state of prevChoices");
+                                            console.log(prevChoices);
+                                            newChoices.push(...prevChoices);
+                                            return prevChoices;
+                                        });
+                                        props.onChoiceTableModify("choiceDelete", newChoices);
+                                    }}>
+                                    <DeleteIcon name="delete" />
+                                </TableCell>
+                            </TableRow>
+                        )}
+                    </TableBody>
+                )
+            }
+
+            else if (props.selectedNode?.data.questionType === "truefalse") {
+                return (
+                    <TableBody>
+                        {choices && choices.map((row, i) =>
+                            <TableRow key={i}  >
+                                <TableCell component="th" scope="row" >
+                                    {i + 1}
+                                </TableCell>
+                                <TableCell align="center" sx={{minWidth:150}}>
+                                    {row.text
+                                    /* <TextField
+                                        type="text"
+                                        id="choiceText"
+                                        name="choiceText"
+                                        value={row.text}
+                                        variant="outlined"
+                                        size="small"
+                                        style={{ minWidth: 100 }}
+                                        inputProps={
+                                            { readOnly: true, }}
+                                    /> */}
+                                </TableCell>
+                                <TableCell align="right">
+                                    <TextareaAutosize
+                                        type="text"
+                                        id="choiceFeedback"
+                                        name="choiceFeedback"
+                                        value={row.feedback}
+                                        size="small"
+                                        maxRows={2.5}
+                                        minRows={2.5}
+                                        style={{ minWidth: 250 }}
+                                        onChange={(e) => {
+                                            setChoices((prevChoices) => {
+                                                prevChoices[i].feedback = e.target.value;
+                                                return prevChoices;
+                                            });
+                                            props.onChoiceEdit(e, i, "choiceFeedback");
+                                        }} />
+                                </TableCell>
+                                <TableCell align="right">
+                                    <TextField
+                                        type="number"
+                                        id="choiceValue"
+                                        name="choiceValue"
+                                        value={row.value}
+                                        sx={{ mx: 0.5 }}
+                                        size="small"
+                                        inputProps={{
+                                            min: 0,
+                                            max: 100,
+                                            step: "100"
+                                        }}
+                                        onChange={(e) => {
+                                            setChoices((prevChoices) => {
+                                                prevChoices[i].value = e.target.value;
+                                                return prevChoices;
+                                            });
+                                            props.onChoiceEdit(e, i, "choiceValue");
+                                        }} />
+                                </TableCell>
+                            </TableRow>
+                        )}
+                    </TableBody>
+                )
+            }
+        }
+    }
+
     const questionType = () => {
         if (props.selectedNode) {
             switch (props.selectedNode?.data.questionType) {
@@ -243,119 +448,17 @@ export default function QuestionEditor(props) {
                     </TextField>
                 </Box>
             }
-
-            <TableContainer sx={{ height: 250, width: 800 }}>
-                <Table stickyHeader size="small" sx={{ width: "max-content", height: "max-content" }}>
-                    <TableHead>
-                        <TableRow>
-                            <TableCell >#</TableCell>
-                            <TableCell align="center">Choices</TableCell>
-                            <TableCell align="center">Feedback</TableCell>
-                            <TableCell align="center">Value</TableCell>
-                            <TableCell />
-                            <TableCell />
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {choices && choices.map((row, i) => (
-                            <TableRow key={i}  >
-                                <TableCell component="th" scope="row" >
-                                    {i + 1}
-                                </TableCell>
-                                <TableCell align="right">
-                                    <TextareaAutosize
-                                        type="text"
-                                        id="choiceText"
-                                        name="choiceText"
-                                        value={row.text}
-                                        maxRows={2.5}
-                                        minRows={2.5}
-                                        variant="outlined"
-                                        style={{ minWidth: 250 }}
-                                        resize="both"
-                                        onChange={(e) => {
-                                            setChoices((prevChoices) => {
-                                                prevChoices[i].text = e.target.value;
-                                                return prevChoices;
-                                            });
-                                            props.onChoiceEdit(e, i, "choiceText");
-                                        }}
-                                    />
-                                </TableCell>
-                                <TableCell align="right">
-                                    <TextareaAutosize
-                                        type="text"
-                                        id="choiceFeedback"
-                                        name="choiceFeedback"
-                                        value={row.feedback}
-                                        size="small"
-                                        maxRows={2.5}
-                                        minRows={2.5}
-                                        onChange={(e) => {
-                                            setChoices((prevChoices) => {
-                                                prevChoices[i].feedback = e.target.value;
-                                                return prevChoices;
-                                            });
-                                            props.onChoiceEdit(e, i, "choiceFeedback");
-                                        }} />
-                                </TableCell>
-                                <TableCell align="right">
-                                    <TextField
-                                        type="number"
-                                        id="choiceValue"
-                                        name="choiceValue"
-                                        value={row.value}
-                                        sx={{ mx: 0.5 }}
-                                        size="small"
-                                        inputProps={{
-                                            min: 0,
-                                            max: 100,
-                                            step: "1"
-                                        }}
-                                        onChange={(e) => {
-                                            setChoices((prevChoices) => {
-                                                prevChoices[i].value = e.target.value;
-                                                return prevChoices;
-                                            });
-                                            props.onChoiceEdit(e, i, "choiceValue");
-                                        }} />
-                                </TableCell>
-                                <TableCell
-                                    onClick={(e) => {
-                                        const newChoices = [];
-                                        setChoices((prevChoices) => {
-                                            prevChoices.splice(i, 0, defaultChoice);
-                                            console.log("Current state of prevChoices");
-                                            console.log(prevChoices);
-                                            newChoices.push(...prevChoices);
-                                            return prevChoices;
-                                        });
-                                        props.onChoiceTableModify("choiceAdd", newChoices);
-                                    }}>
-                                    <AddIcon name="add" />
-                                </TableCell>
-
-                                <TableCell
-                                    onClick={(e) => {
-                                        const newChoices = [];
-                                        setChoices((prevChoices) => {
-                                            console.log("i is: " + i)
-                                            console.log(i);
-                                            prevChoices.splice(i, 1);
-                                            console.log("Current state of prevChoices");
-                                            console.log(prevChoices);
-                                            newChoices.push(...prevChoices);
-                                            return prevChoices;
-                                        });
-                                        props.onChoiceTableModify("choiceDelete", newChoices);
-                                    }}>
-                                    <DeleteIcon name="delete" />
-                                </TableCell>
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </TableContainer>
+            {!props.selectedNode.droppable &&
+                (props.selectedNode.data.questionType === "multichoice"
+                    || props.selectedNode.data.questionType === "truefalse")
+                &&
+                <TableContainer sx={{ height: 250, width: '100%' }}>
+                    <Table stickyHeader size="small" sx={{ width: "max-content", height: "max-content" }}>
+                        {tableColumns()}
+                        {tableRows()}
+                    </Table>
+                </TableContainer>
+            }
 
         </>
     );

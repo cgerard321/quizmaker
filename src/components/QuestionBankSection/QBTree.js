@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { makeStyles } from '@material-ui/core/styles'
 import { Grid, Box } from "@mui/material";
 import { Tree } from "@minoru/react-dnd-treeview";
 import defaultTree from "./defaultTree.json";
@@ -15,7 +16,29 @@ import { copyNode } from "./UtilityFunctions/helper";
 import QuestionEditor from "../Editor/QuestionEditor";
 import * as Constants from "../../constants/questionBankConstants.js";
 
+// const useStyles = makeStyles({
+//     container: {
+//         marginTop: 3, //leave space for header
+//         marginRight: 6,
+//         marginLeft: 6,
+//         height: "85vh", // So that grids go all the way down to before footer
+//         minHeight: "25vh", // Give minimum height to a div
+//         //border: "1px solid black",
+//         width: "100%",
+//         fontSize: 20,
+//         textAlign: "left",
+//         paddingTop: 5,
+//         marginBottom: 100,
+//     },
+//     containerTall: {
+//         minHeight: 250, // This div has higher minimum height
+//     },
+// });
+
 const QBTree = (props) => {
+
+    //const classes = useStyles();
+
     const [treeData, setTreeData] = useState(defaultTree);
     //const handleDrop = (newTree) => setTreeData(newTree);
     const [selectedNode, setSelectedNode] = useState(null);
@@ -236,11 +259,27 @@ const QBTree = (props) => {
         <StylesProvider injectFirst>
             <ThemeProvider theme={treeTheme}>
                 <CssBaseline />
-                <Grid container direction="row" spacing={2}>
-                    <Grid item xs={4}>
-                        <Box style={{ maxHeight: 400, overflowY: 'scroll' }} className={styles.app}>
+                <div
+                    style={{
+                        //backgroundColor: "orange",
+                        height: "85%",
+                        display: "flex",
 
-                            <Tree
+                    }}>
+                    <Grid container direction={'row'} spacing={2} style={{
+                        //backgroundColor: "yellow",
+                        minHeight: "100%",
+                        maxHeight: "100%",
+                        maxWidth: "100%",
+                        marginLeft: '0.25vw',
+                        overflowY: "hidden"
+                    }}>
+                        <Grid item xs={4} style={{
+                            //backgroundColor: "lightgreen",
+                            maxHeight: "100%",
+                            overflowY: "auto",
+                        }}>
+                            <Tree 
                                 tree={treeData}
                                 rootId={-1}
                                 render={(node: NodeModel<CustomData>,
@@ -262,17 +301,21 @@ const QBTree = (props) => {
                                 sort={false}
                                 insertDroppableFirst={false}
                             />
-                        </Box>
+                        </Grid>
+                        <Grid item xs={8} style={{
+                            //backgroundColor: "lightgreen",
+                            maxHeight: "100%",
+                            overflowY: "auto"
+                        }}>
+                            {selectedNode && <QuestionEditor
+                                selectedNode={selectedNode}
+                                onFieldChange={handleFieldChange}
+                                onTextChange={handleQuestionTextChange}
+                                onChoiceEdit={handleChoiceEdit}
+                                onChoiceTableModify={handleChoiceTableModify} />}
+                        </Grid>
                     </Grid>
-                    <Grid item xs={8} >
-                        {selectedNode && <QuestionEditor
-                            selectedNode={selectedNode}
-                            onFieldChange={handleFieldChange}
-                            onTextChange={handleQuestionTextChange}
-                            onChoiceEdit={handleChoiceEdit}
-                            onChoiceTableModify={handleChoiceTableModify} />}
-                    </Grid>
-                </Grid>
+                    </div>
             </ThemeProvider>
         </StylesProvider >
     );

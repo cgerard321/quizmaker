@@ -37,7 +37,7 @@ export const CustomNode = (props) => {
         <TypeIcon droppable={droppable} questionType={data?.questionType} />
       </div>
       <div className={styles.labelGridItem}>
-        <Typography variant="body2">{props.node.text}</Typography>
+        <Typography fontSize='0.9rem' >{props.node.text}</Typography>
       </div>
     </div>
   );
