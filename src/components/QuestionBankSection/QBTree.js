@@ -78,6 +78,9 @@ const QBTree = (props) => {
                     case "numbering":
                         newNode.data.question.numbering = Constants.answer_numbering.indexOf(e.target.value);
                         break;
+                    case "caseSensitive":
+                        newNode.data.question.case_sensitive = e.target.checked;
+                        break;
                     default:
                         console.log("Event for choices:")
                         console.log(e);
@@ -279,7 +282,7 @@ const QBTree = (props) => {
                             maxHeight: "100%",
                             overflowY: "auto",
                         }}>
-                            <Tree 
+                            <Tree
                                 tree={treeData}
                                 rootId={-1}
                                 render={(node: NodeModel<CustomData>,
@@ -315,7 +318,7 @@ const QBTree = (props) => {
                                 onChoiceTableModify={handleChoiceTableModify} />}
                         </Grid>
                     </Grid>
-                    </div>
+                </div>
             </ThemeProvider>
         </StylesProvider >
     );

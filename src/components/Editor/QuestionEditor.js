@@ -64,6 +64,7 @@ export default function QuestionEditor(props) {
     const [penalty, setPenalty] = useState(props.selectedNode?.data.question.penalty ?? 0.00);
     const [singleAnswer, setSingleAnswer] = useState(props.selectedNode?.data.question.single_answer ?? false);
     const [shuffleAnswers, setShuffleAnswers] = useState(props.selectedNode?.data.question.shuffle_answers ?? false);
+    const [caseSensitive, setCaseSensitive] = useState(props.selectedNode?.data.question.case_sensitive ?? false);
     const [numbering, setNumbering] = useState(props.selectedNode?.data.question.numbering ?? Constants.answer_numbering[1]);
     const [choices, setChoices] = useState(props.selectedNode?.data.question.choicesFull ?? [defaultChoice]);
 
@@ -73,13 +74,14 @@ export default function QuestionEditor(props) {
         setPenalty(props.selectedNode?.data.question.penalty);
         setSingleAnswer(props.selectedNode?.data.question.single_answer);
         setShuffleAnswers(props.selectedNode?.data.question.shuffle_answers);
+        setCaseSensitive(props.selectedNode?.data.question.case_sensitive);
         setNumbering(props.selectedNode?.data.question.numbering)
         setChoices(props.selectedNode?.data.question.choicesFull);
     }, [props.selectedNode]);
 
     const tableColumns = () => {
         if (props.selectedNode) {
-            if (props.selectedNode?.data.questionType === "multichoice") {
+            if (props.selectedNode?.data.questionType === "multichoice" || props.selectedNode?.data.questionType === "shortanswer") {
                 return (
                     <TableHead>
                         <TableRow>
@@ -110,7 +112,7 @@ export default function QuestionEditor(props) {
 
     const tableRows = () => {
         if (props.selectedNode) {
-            if (props.selectedNode?.data.questionType === "multichoice") {
+            if (props.selectedNode?.data.questionType === "multichoice" || props.selectedNode?.data.questionType === "shortanswer") {
                 return (
                     <TableBody>
                         {choices && choices.map((row, i) =>
@@ -221,7 +223,7 @@ export default function QuestionEditor(props) {
                                 <TableCell component="th" scope="row" >
                                     {i + 1}
                                 </TableCell>
-                                <TableCell align="center" sx={{minWidth:150}}>
+                                <TableCell align="center" sx={{ minWidth: 150 }}>
                                     {row.text
                                     /* <TextField
                                         type="text"
@@ -448,9 +450,25 @@ export default function QuestionEditor(props) {
                     </TextField>
                 </Box>
             }
+            {props.selectedNode.data.questionType === "shortanswer" &&
+                <FormControlLabel
+                    name="caseSensitive"
+                    control={<Checkbox
+                        checked={caseSensitive}
+                        onChange={(e) => {
+                            setCaseSensitive(e.target.checked);
+                            props.onFieldChange(e);
+                        }} />}
+                    label={
+                        <Typography sx={{ fontSize: 14 }}>
+                            Case Sensitive
+                        </Typography>}
+                />
+            }
             {!props.selectedNode.droppable &&
                 (props.selectedNode.data.questionType === "multichoice"
-                    || props.selectedNode.data.questionType === "truefalse")
+                    || props.selectedNode.data.questionType === "truefalse" ||
+                    props.selectedNode.data.questionType === "shortanswer")
                 &&
                 <TableContainer sx={{ height: 250, width: '100%' }}>
                     <Table stickyHeader size="small" sx={{ width: "max-content", height: "max-content" }}>
