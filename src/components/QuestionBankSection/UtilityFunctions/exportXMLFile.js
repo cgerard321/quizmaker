@@ -1,4 +1,5 @@
-import {download} from "./download.js"
+import {download} from "./download.js";
+import * as Constants from "../../../constants/questionBankConstants.js";
 
 export function exportXMLFile(fileName, treeData) {
 
@@ -57,9 +58,10 @@ export function exportXMLFile(fileName, treeData) {
                     '<correctfeedback format="html"><text></text></correctfeedback>\n' +
                     '<partiallycorrectfeedback format = "html"><text></text></partiallycorrectfeedback>\n' +
                     '<incorrectfeedback format = "html"><text></text></incorrectfeedback>\n' +
-                    '<answer fraction = "' + q.choicesFull[0].value + '" format = "html">\n<text>true</text>\n<feedback format = "html">\n<text><![CDATA[' + q.choicesFull[0].feedback + ']]></text>\n</feedback>\n</answer>\n' +
-                    '<answer fraction = "' + q.choicesFull[1].value + '" format = "html">\n<text>false</text>\n<feedback format = "html">\n<text><![CDATA[' + q.choicesFull[1].feedback + ']]></text>\n</feedback>\n</answer>\n';
+                    '<answer fraction = "' + q.choicesFull[0].value + '" format = "html">\n<text><![CDATA[' + q.choicesFull[0].text + ']]>\n</text>\n<feedback format = "html">\n<text><![CDATA[' + q.choicesFull[0].feedback + ']]></text>\n</feedback>\n</answer>\n' +
+                    '<answer fraction = "' + q.choicesFull[1].value + '" format = "html">\n<text><![CDATA[' + q.choicesFull[1].text + ']]>\n</text>\n<feedback format = "html">\n<text><![CDATA[' + q.choicesFull[1].feedback + ']]></text>\n</feedback>\n</answer>\n';
                 break;
+                //check if true / false need to be hard-coded like in V1.0. 
             }
 
             case "multichoice": {
@@ -68,12 +70,14 @@ export function exportXMLFile(fileName, treeData) {
                     '<hidden> 0 </hidden>\n' +
                     '<single>' + q.single_answer + '</single>\n' +
                     '<shuffleanswers>' + (q.shuffle_answers ? '1' : '0') + '</shuffleanswers>\n' +
-                    '<answernumbering>' + answer_numbering[q.numbering] + '</answernumbering>\n' +
+                    '<answernumbering>' + Constants.answer_numbering[q.numbering] + '</answernumbering>\n' +
                     '<correctfeedback format="html"><text></text></correctfeedback>\n' +
                     '<partiallycorrectfeedback format = "html"><text></text></partiallycorrectfeedback>\n' +
                     '<incorrectfeedback format = "html"><text></text></incorrectfeedback>\n';
                 for (var c = 0; c < q.choicesFull.length; c++) {
-                    xml += '<answer fraction = "' + q.choicesFull[c].value + '" format = "html">\n<text><![CDATA[' + q.choicesFull[c] + ']]>\n</text>\n' +
+                    console.log("Content of ChoicesFull at position" + c);
+                    console.log(q.choicesFull[c]);
+                    xml += '<answer fraction = "' + q.choicesFull[c].value + '" format = "html">\n<text><![CDATA[' + q.choicesFull[c].text + ']]>\n</text>\n' +
                         '<feedback format = "html">\n<text><![CDATA[' + q.choicesFull[c].feedback + ']]></text>\n' +
                         '</feedback>\n</answer>\n';
                 }
@@ -88,7 +92,7 @@ export function exportXMLFile(fileName, treeData) {
                         '<partiallycorrectfeedback format = "html"><text></text></partiallycorrectfeedback>\n' +
                         '<incorrectfeedback format = "html"><text></text></incorrectfeedback>\n';
                 for (var c = 0; c < q.choicesFull.length; c++) {
-                    xml += '<answer fraction = "' + q.choicesFull[c].value + '" format = "html">\n<text><![CDATA[' + q.choicesFull[c] + ']]>\n</text>\n' +
+                    xml += '<answer fraction = "' + q.choicesFull[c].value + '" format = "html">\n<text><![CDATA[' + q.choicesFull[c].text + ']]>\n</text>\n' +
                         '<feedback format = "html">\n<text ><![CDATA[' + q.choicesFull[c].feedback + ']]></text>\n' +
                         '</feedback>\n</answer>\n';
                 }
@@ -109,6 +113,17 @@ export function exportXMLFile(fileName, treeData) {
 
             }
         }
+
+        if (q.tags[0] != "")
+			{
+			xml+="<tags>\n";
+			for (var tagnr=0;tagnr<q.tags.length;tagnr++)
+				{
+				xml+="<tag><text>"+q.tags[tagnr]+"</text></tag>\n";
+				}
+			xml+="</tags>\n";
+			}
+		xml+='</question>\n';
     }
 
     xml += '</quiz>';
