@@ -3,7 +3,7 @@ import { Button, Tooltip } from "@mui/material";
 
 import DownloadIcon from '@mui/icons-material/Download';
 import PopUpFileName from './PopUpFileName';
-import {exportXMLFile } from "./QuestionBankSection/UtilityFunctions/exportXMLFile.js";
+import { exportXMLFile } from "./QuestionBankSection/UtilityFunctions/exportXMLFile.js";
 
 export default function ExportAllMoodleButton(props) {
 
@@ -12,7 +12,7 @@ export default function ExportAllMoodleButton(props) {
     const [xmlfilename, setXmlFileName] = useState("");
 
     const handleBtnClick = (e) => {
-        setShowPopup(true);       
+        setShowPopup(true);
     };
 
     useEffect(() => {
@@ -32,13 +32,17 @@ export default function ExportAllMoodleButton(props) {
                         borderColor: 'black'
                     }}
                     onClick={handleBtnClick}
-                    >
+                >
                     <DownloadIcon />
                 </Button>
-                
+
             </Tooltip>
-            <PopUpFileName show={showPopup} onClose={setShowPopup} onClick={setXmlFileName}/> 
-                   </div>
+            <PopUpFileName
+                show={showPopup}
+                onClose={setShowPopup}
+                onClick={setXmlFileName}
+                defaultFileName={props.uploadedXMLFileName} />
+        </div>
     );
 
 }

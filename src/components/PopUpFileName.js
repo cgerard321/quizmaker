@@ -6,9 +6,8 @@ import { Button, TextField, Stack } from '@mui/material';
 
 export default function PopUpFileName(props) {
 
-    const [name, setName] = useState("");
+    const [name, setName] = useState(props.defaultFileName);
     const [showPopup, setShowPopup] = useState(props.show);
-    //console.log("In popup. Value of show Popup is: " + showPopup);
 
     const handleChange = (event) => {
         setName(event.target.value);
@@ -29,11 +28,11 @@ export default function PopUpFileName(props) {
     useEffect(() => {
         setShowPopup(props.show);
         console.log("Value of show in Popup is: " + props.show);
-    }, [props.show]);
+        setName(props.defaultFileName)
+    }, [props.show, props.defaultFileName]);
 
     return (
         <Popup open={showPopup} onClose={() => props.onClose(false)} modal>
-           
                 <Stack spacing={2}>
                     <TextField
                         label="Enter a file name:"
@@ -49,11 +48,7 @@ export default function PopUpFileName(props) {
                         <Button variant="contained" onClick={handleCancel} type="submit">Cancel</Button>
 
                     </Stack>
-
                 </Stack>
-
         </Popup>
-
     )
-
 }

@@ -7,11 +7,11 @@ import QBTree from "./QBTree";
 import { Typography } from "@mui/material";
 import defaultTree from "./defaultTree.json";
 import ExportAllMoodleButton from "../ExportAllMoodleButton";
-import PopUpFileName from '../PopUpFileName';
 
 const QuestionBankSection = (props) => {
 
     const [treeData, setTreeData] = useState(defaultTree);
+    const [uploadedXMLFileName, setUploadedXMLFileName] = useState("");
 
 
     return (
@@ -22,8 +22,8 @@ const QuestionBankSection = (props) => {
                 direction="row"
                 justifyContent="flex-start"
                 alignItems="flex-start">
-                <UploadButton setFile={props.setFile} setFileObject={props.setFileObject} />
-                <ExportAllMoodleButton treeData={treeData}/>
+                <UploadButton setFile={props.setFile} setFileObject={props.setFileObject} setUploadedXMLFileName={setUploadedXMLFileName}/>
+                <ExportAllMoodleButton treeData={treeData} uploadedXMLFileName={uploadedXMLFileName}/>
             </Stack>
             <QBTree
                 file={props.file}

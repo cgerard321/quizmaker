@@ -6,15 +6,6 @@ export function exportXMLFile(fileName, treeData) {
     if (treeData.length < 1) {
         return;
     }
-    console.log("TreeData is: ");
-    console.log(treeData);
-
-    console.log("first node data is: ");
-    console.log(treeData[0].data);
-
-    console.log("first question");
-    console.log(treeData[0].data.question);
-
 
     let current_file = ""; //see if there's a way to keep the file that was open as a default.
 
