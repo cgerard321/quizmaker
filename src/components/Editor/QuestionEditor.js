@@ -41,7 +41,7 @@ const useStyles = makeStyles({
 export default function QuestionEditor(props) {
 
     const defaultChoice = {
-        text: "",
+        text: '<p dir="ltr" style="text-align: left;">  </p>',
         feedback: "",
         value: 0
     };

@@ -1,4 +1,4 @@
-import {download} from "./download.js";
+import { download } from "./download.js";
 import * as Constants from "../../../constants/questionBankConstants.js";
 
 export function exportXMLFile(fileName, treeData) {
@@ -22,17 +22,18 @@ export function exportXMLFile(fileName, treeData) {
     let len = treeData.length;
     console.log("Saving " + len + " questions"); //see if there's a way to alert the user
 
-    let counter = 0;
-
     for (let i = 0; i < len; i++) {
         let nr = i;
         let q = treeData[nr].data.question;
-        if (q.type == "category") continue;
-        counter++;
+
+        if (q.type == "category")
+            continue;
+
         if (q.category != cat) {
             xml += '<question type="category">\n<category>\n<text>' + q.category + '</text>\n</category>\n</question>';
             cat = q.category;
         }
+        
         xml += '<question type="' + q.type + '">\n' +
             '<name>\n<text>' + q.name + '</text>\n</name>\n' +
             '<questiontext format="html">\n<text><';
@@ -105,20 +106,17 @@ export function exportXMLFile(fileName, treeData) {
             }
         }
 
-        if (q.tags[0] != "")
-			{
-			xml+="<tags>\n";
-			for (var tagnr=0;tagnr<q.tags.length;tagnr++)
-				{
-				xml+="<tag><text>"+q.tags[tagnr]+"</text></tag>\n";
-				}
-			xml+="</tags>\n";
-			}
-		xml+='</question>\n';
+        if (q.tags[0] != "") {
+            xml += "<tags>\n";
+            for (var tagnr = 0; tagnr < q.tags.length; tagnr++) {
+                xml += "<tag><text>" + q.tags[tagnr] + "</text></tag>\n";
+            }
+            xml += "</tags>\n";
+        }
+        xml += '</question>\n';
     }
 
     xml += '</quiz>';
     download(xml, current_file, "text");
-    //alert_box("Downloaded file contains " + counter + " questions");
 
 }
