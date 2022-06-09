@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { makeStyles } from '@material-ui/core/styles'
 import { Grid, Box } from "@mui/material";
 import { Tree } from "@minoru/react-dnd-treeview";
-import defaultTree from "./defaultTree.json";
+
 import { ThemeProvider, CssBaseline } from "@mui/material";
 import { StylesProvider } from "@material-ui/styles";
 import { CustomNode } from "./CustomNode";
@@ -39,7 +39,7 @@ const QBTree = (props) => {
 
     //const classes = useStyles();
 
-    const [treeData, setTreeData] = useState(defaultTree);
+    //const [treeData, setTreeData] = useState(defaultTree);
     //const handleDrop = (newTree) => setTreeData(newTree);
     const [selectedNode, setSelectedNode] = useState(null);
 
@@ -52,7 +52,7 @@ const QBTree = (props) => {
     };
 
     const handleFieldChange = (e) => {
-        const newTree = treeData.map((node) => {
+        const newTree = props.treeData.map((node) => {
 
             if (node.id === selectedNode.id) {
                 const newNode = copyNode(node);
@@ -90,11 +90,11 @@ const QBTree = (props) => {
             }
             return node;
         });
-        setTreeData(newTree);
+        props.setTreeData(newTree);
     }
 
     const handleChoiceEdit = (e, index) => {
-        const newTree = treeData.map((node) => {
+        const newTree = props.treeData.map((node) => {
 
             if (node.id === selectedNode.id) {
                 const newNode = copyNode(node);
@@ -129,11 +129,11 @@ const QBTree = (props) => {
             }
             return node;
         });
-        setTreeData(newTree);
+        props.setTreeData(newTree);
     }
 
     const handleChoiceTableModify = (action, choices) => {
-        const newTree = treeData.map((node) => {
+        const newTree = props.treeData.map((node) => {
             if (node.id === selectedNode.id) {
                 const newNode = copyNode(node);
 
@@ -168,12 +168,12 @@ const QBTree = (props) => {
             }
             return node;
         });
-        setTreeData(newTree);
+        props.setTreeData(newTree);
     }
 
 
     const handleQuestionTextChange = (value) => {
-        const newTree = treeData.map((node) => {
+        const newTree = props.treeData.map((node) => {
 
             console.log("value is: " + value);
 
@@ -186,7 +186,7 @@ const QBTree = (props) => {
             }
             return node;
         });
-        setTreeData(newTree);
+        props.setTreeData(newTree);
     }
 
     const myFile = props.file;
@@ -214,18 +214,31 @@ const QBTree = (props) => {
     };
 
     const getParentCategoryKey = (question, questionbank) => {
-        let parentCat = question.category.replace(question.name, "");
-        //console.log('last char is: ' + parentCat.charAt(parentCat.length - 1));
-        if (parentCat.charAt(parentCat.length - 1) === "/") {
-            //console.log("last char is a /");
-            parentCat = parentCat.slice(0, parentCat.length - 1);
+        console.log("Question category is: " + question.category);
+        let parentCat;
+        if (question.type === "category") {
+            parentCat = question.category.replace(question.name, "");
+
+            console.log('last char is: ' + parentCat.charAt(parentCat.length - 1));
+            
+            if (parentCat.charAt(parentCat.length - 1) === "/") {
+                console.log("last char is a /");
+                parentCat = parentCat.slice(0, parentCat.length - 1);
+            }
+            parentCat.trim();
+
+        } else {
+            parentCat = question.category;
         }
-        parentCat.trim();
-        // console.log("Question Name: " + question.name);
-        // console.log("Question Category: " + question.category);
-        // console.log("Parent category: " + parentCat);
+
+
         let parentKey = getDumCatKey(parentCat, questionbank);
-        // console.log('ParentKey is: ' + parentKey);
+        if (parentKey === -1) {
+            console.log("No parent key found");
+            console.log(question);
+            console.log("Parent category: " + parentCat);
+        }
+
         return parentKey;
     };
 
@@ -243,13 +256,17 @@ const QBTree = (props) => {
                     question: questionbank[i],
                 },
             };
+            // if (data.parent === -1) {
+            //     console.log(`Questionbank[${i}] is: `);
+            //     console.log(questionbank[i]);
+            // }
             myTreeData.push(data);
         }
 
         console.log("Printing out myTreeData");
         console.log(myTreeData);
 
-        setTreeData([...myTreeData]);
+        props.setTreeData([...myTreeData]);
     };
 
     useEffect(() => {
@@ -283,7 +300,7 @@ const QBTree = (props) => {
                             overflowY: "auto",
                         }}>
                             <Tree
-                                tree={treeData}
+                                tree={props.treeData}
                                 rootId={-1}
                                 render={(node: NodeModel<CustomData>,
                                     { depth, isOpen, onToggle }
