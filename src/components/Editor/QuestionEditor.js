@@ -66,6 +66,7 @@ export default function QuestionEditor(props) {
     const [shuffleAnswers, setShuffleAnswers] = useState(props.selectedNode?.data.question.shuffle_answers ?? false);
     const [caseSensitive, setCaseSensitive] = useState(props.selectedNode?.data.question.case_sensitive ?? false);
     const [numbering, setNumbering] = useState(props.selectedNode?.data.question.numbering ?? Constants.answer_numbering[1]);
+    const [tags, setTags] = useState(props.selectedNode?.data.question.tags ?? []);
     const [choices, setChoices] = useState(props.selectedNode?.data.question.choicesFull ?? [defaultChoice]);
 
     useEffect(() => {
@@ -76,6 +77,7 @@ export default function QuestionEditor(props) {
         setShuffleAnswers(props.selectedNode?.data.question.shuffle_answers);
         setCaseSensitive(props.selectedNode?.data.question.case_sensitive);
         setNumbering(props.selectedNode?.data.question.numbering)
+        setTags(props.selectedNode?.data.question.tags)
         setChoices(props.selectedNode?.data.question.choicesFull);
     }, [props.selectedNode]);
 
@@ -333,6 +335,7 @@ export default function QuestionEditor(props) {
                     setQuestionName(e.target.value);
                     props.onFieldChange(e);
                 }} />
+
             {!props.selectedNode.droppable &&
                 <Editor
                     onInit={(evt, editor) => (editorRef.current = editor)}
@@ -353,13 +356,15 @@ export default function QuestionEditor(props) {
                         content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
                     }}
                 />}
-            {!props.selectedNode.droppable && props.selectedNode.data.questionType !== "description" &&
+
+            {!props.selectedNode.droppable &&
                 <Box
                     mt={1}
                     display="flex"
                     justifyContent="flex-start"
                     align-items="flex-start">
-                    <TextField
+
+                    {props.selectedNode.data.questionType !== "description" && <TextField
                         type="number"
                         id="defaultGrade"
                         name="defaultGrade"
@@ -375,8 +380,9 @@ export default function QuestionEditor(props) {
                             setDefaultGrade(parseFloat(e.target.value).toFixed(2));
                             props.onFieldChange(e);
                         }} />
+                    }
 
-                    <TextField
+                    {props.selectedNode.data.questionType !== "description" && <TextField
                         type="number"
                         id="penalty"
                         name="penalty"
@@ -392,6 +398,24 @@ export default function QuestionEditor(props) {
                             setPenalty(parseFloat(e.target.value).toFixed(2));
                             props.onFieldChange(e);
                         }} />
+                    }
+
+                    <TextField
+                        type="text"
+                        id="tags"
+                        name="tags"
+                        label="Tags"
+                        size="small"
+                        sx={{ width: 400, mx: 0.5 }}
+                        value={tags.join(', ')}
+                        onChange={(e) => {
+                            let newTags = e.target.value.split(',').map(item => item.trim());
+                            console.log("Updated Tags");
+                            console.log(newTags);
+                            setTags(newTags);
+                            props.onTagChange(newTags);
+                        }} />
+
                 </Box>
             }
             {!props.selectedNode.droppable && props.selectedNode.data.questionType === "multichoice" &&

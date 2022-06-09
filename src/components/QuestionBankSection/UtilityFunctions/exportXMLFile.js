@@ -12,9 +12,8 @@ export function exportXMLFile(fileName, treeData) {
     if (fileName === "") {
         current_file = "default.xml"
     }
-
     else {
-        let ext = (fileName.lastIndexOf(".") - 1 >>> 0) + 2;
+        let ext = fileName.split('.').pop();
         if (ext === "xml") {
             current_file = fileName
         } else {
@@ -59,7 +58,6 @@ export function exportXMLFile(fileName, treeData) {
                     '<answer fraction = "' + q.choicesFull[0].value + '" format = "html">\n<text><![CDATA[' + q.choicesFull[0].text + ']]>\n</text>\n<feedback format = "html">\n<text><![CDATA[' + q.choicesFull[0].feedback + ']]></text>\n</feedback>\n</answer>\n' +
                     '<answer fraction = "' + q.choicesFull[1].value + '" format = "html">\n<text><![CDATA[' + q.choicesFull[1].text + ']]>\n</text>\n<feedback format = "html">\n<text><![CDATA[' + q.choicesFull[1].feedback + ']]></text>\n</feedback>\n</answer>\n';
                 break;
-                //check if true / false need to be hard-coded like in V1.0. 
             }
 
             case "multichoice": {
@@ -73,8 +71,6 @@ export function exportXMLFile(fileName, treeData) {
                     '<partiallycorrectfeedback format = "html"><text></text></partiallycorrectfeedback>\n' +
                     '<incorrectfeedback format = "html"><text></text></incorrectfeedback>\n';
                 for (var c = 0; c < q.choicesFull.length; c++) {
-                    console.log("Content of ChoicesFull at position" + c);
-                    console.log(q.choicesFull[c]);
                     xml += '<answer fraction = "' + q.choicesFull[c].value + '" format = "html">\n<text><![CDATA[' + q.choicesFull[c].text + ']]>\n</text>\n' +
                         '<feedback format = "html">\n<text><![CDATA[' + q.choicesFull[c].feedback + ']]></text>\n' +
                         '</feedback>\n</answer>\n';

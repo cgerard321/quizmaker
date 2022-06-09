@@ -16,38 +16,11 @@ import { copyNode } from "./UtilityFunctions/helper";
 import QuestionEditor from "../Editor/QuestionEditor";
 import * as Constants from "../../constants/questionBankConstants.js";
 
-// const useStyles = makeStyles({
-//     container: {
-//         marginTop: 3, //leave space for header
-//         marginRight: 6,
-//         marginLeft: 6,
-//         height: "85vh", // So that grids go all the way down to before footer
-//         minHeight: "25vh", // Give minimum height to a div
-//         //border: "1px solid black",
-//         width: "100%",
-//         fontSize: 20,
-//         textAlign: "left",
-//         paddingTop: 5,
-//         marginBottom: 100,
-//     },
-//     containerTall: {
-//         minHeight: 250, // This div has higher minimum height
-//     },
-// });
-
 const QBTree = (props) => {
 
-    //const classes = useStyles();
-
-    //const [treeData, setTreeData] = useState(defaultTree);
-    //const handleDrop = (newTree) => setTreeData(newTree);
     const [selectedNode, setSelectedNode] = useState(null);
 
-
-
     const handleSelect = (node) => {
-        console.log("Current node: " + node.text);
-        console.log(node);
         setSelectedNode(node);
     };
 
@@ -56,6 +29,7 @@ const QBTree = (props) => {
 
             if (node.id === selectedNode.id) {
                 const newNode = copyNode(node);
+
                 switch (e.target.name) {
                     case "name":
                         newNode.text = e.target.value;
@@ -68,8 +42,6 @@ const QBTree = (props) => {
                         newNode.data.question.penalty = e.target.value;
                         break;
                     case "singleAnswer":
-                        console.log("SingleAnswer");
-                        console.log(e.target.value);
                         newNode.data.question.single_answer = e.target.checked;
                         break;
                     case "shuffleAnswers":
@@ -93,32 +65,37 @@ const QBTree = (props) => {
         props.setTreeData(newTree);
     }
 
+    const handleTagEdit = (updatedTags) => {
+        const newTree = props.treeData.map((node) => {
+
+            if (node.id === selectedNode.id) {
+                const newNode = copyNode(node);
+                newNode.data.question.tags = updatedTags;
+                return newNode;
+            }
+            return node;
+        });
+        props.setTreeData(newTree);
+    }
+
     const handleChoiceEdit = (e, index) => {
         const newTree = props.treeData.map((node) => {
 
             if (node.id === selectedNode.id) {
                 const newNode = copyNode(node);
+
                 switch (e.target.name) {
                     case "choiceText":
                         newNode.data.question.choicesFull[index].text = e.target.value;
-                        console.log("new choice text for index: " + index);
-                        console.log(e.target.value);
                         break;
 
                     case "choiceFeedback":
                         newNode.data.question.choicesFull[index].feedback = e.target.value;
-                        console.log("new choice feedback for index: " + index);
-                        console.log(e.target.value);
                         break;
 
                     case "choiceValue":
                         newNode.data.question.choicesFull[index].value = e.target.value;
-
-                        console.log("new choice value for index: " + index);
-                        console.log(e.target.value);
                         break;
-
-
 
                     default:
                         console.log("Event for choices:")
@@ -138,31 +115,18 @@ const QBTree = (props) => {
                 const newNode = copyNode(node);
 
                 switch (action) {
-
                     case "choiceDelete":
-                        console.log("Choices received");
-                        console.log(choices);
-                        console.log("Choices before deletion")
                         newNode.data.question.choicesFull.splice(0, newNode.data.question.choicesFull.length);
                         newNode.data.question.choicesFull = choices;
-                        console.log("choice after deletion");
-                        console.log(newNode.data.question.choicesFull);
                         break;
 
                     case "choiceAdd":
-                        console.log("Choices received");
-                        console.log(choices);
-                        console.log("Choices before addition")
-                        console.log(newNode.data.question.choicesFull);
                         newNode.data.question.choicesFull.splice(0, newNode.data.question.choicesFull.length);
                         newNode.data.question.choicesFull = choices;
-                        console.log("Choices after addition");
-                        console.log(newNode.data.question.choicesFull);
                         break;
 
                     default:
                         console.log("No action");
-
                 }
                 return newNode;
             }
@@ -174,8 +138,6 @@ const QBTree = (props) => {
 
     const handleQuestionTextChange = (value) => {
         const newTree = props.treeData.map((node) => {
-
-            console.log("value is: " + value);
 
             if (node.id === selectedNode.id) {
 
@@ -196,33 +158,24 @@ const QBTree = (props) => {
     const question_categories = []; //use this to keep track of the categories
 
     const buildQuestionBankFromXMLFile = () => {
+
         loadXMLFile(questionbank, myFile);
-        //console.log('4 questionbank length: ' + questionbank.length);
         postLoadCleanUp(questionbank);
-
         updateQuestionCategories(question_categories, questionbank);
-
-        console.log("Printing out questionbank before Id numbering");
-        console.log(questionbank);
 
         //assign unique ids to each question
         for (let i = 0; i < questionbank.length; i++) {
             questionbank[i].id = i;
         }
-        console.log("Printing out questionbank");
-        console.log(questionbank);
     };
 
     const getParentCategoryKey = (question, questionbank) => {
-        console.log("Question category is: " + question.category);
+
         let parentCat;
         if (question.type === "category") {
             parentCat = question.category.replace(question.name, "");
 
-            console.log('last char is: ' + parentCat.charAt(parentCat.length - 1));
-            
             if (parentCat.charAt(parentCat.length - 1) === "/") {
-                console.log("last char is a /");
                 parentCat = parentCat.slice(0, parentCat.length - 1);
             }
             parentCat.trim();
@@ -231,13 +184,7 @@ const QBTree = (props) => {
             parentCat = question.category;
         }
 
-
         let parentKey = getDumCatKey(parentCat, questionbank);
-        if (parentKey === -1) {
-            console.log("No parent key found");
-            console.log(question);
-            console.log("Parent category: " + parentCat);
-        }
 
         return parentKey;
     };
@@ -256,21 +203,13 @@ const QBTree = (props) => {
                     question: questionbank[i],
                 },
             };
-            // if (data.parent === -1) {
-            //     console.log(`Questionbank[${i}] is: `);
-            //     console.log(questionbank[i]);
-            // }
             myTreeData.push(data);
         }
-
-        console.log("Printing out myTreeData");
-        console.log(myTreeData);
 
         props.setTreeData([...myTreeData]);
     };
 
     useEffect(() => {
-        console.log("Open case");
         buildQuestionBankFromXMLFile(props.file, questionbank);
         buildTreeFromQuestionBank(questionbank);
     }, [props.file]);
@@ -332,7 +271,8 @@ const QBTree = (props) => {
                                 onFieldChange={handleFieldChange}
                                 onTextChange={handleQuestionTextChange}
                                 onChoiceEdit={handleChoiceEdit}
-                                onChoiceTableModify={handleChoiceTableModify} />}
+                                onChoiceTableModify={handleChoiceTableModify}
+                                onTagChange={handleTagEdit} />}
                         </Grid>
                     </Grid>
                 </div>

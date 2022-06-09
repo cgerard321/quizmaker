@@ -67,7 +67,6 @@ export function loadXMLFile(questionbank, myFile) {
                 //TODO: later clean this up by keeping only choicesFull and removing choices, feedback, and value arrays
                 //TODO: also clean this up by using the optional chaining ?. operator instead of these if/else blocks
 
-                console.log("question.type is 'truefalse'");
                 question.name = xmlQList[i].getElementsByTagName("text")[0].firstChild.nodeValue;
                 question.question_text = xmlQList[i]
                     .getElementsByTagName("questiontext")[0]
@@ -135,13 +134,11 @@ export function loadXMLFile(questionbank, myFile) {
                         choicesObject.feedback = choices[choice_nr].getElementsByTagName("feedback")[0].childNodes[0].nodeValue;
                     }
                     question.choicesFull.push(choicesObject);
-                    console.log("Choices are: " + choicesObject);
                 }
                 questionbank.push(question); //store the imported question in the database
                 break;
             }
             case "multichoice": {
-                console.log("question.type is 'multichoice'");
                 question.name = xmlQList[i].getElementsByTagName("text")[0].firstChild.nodeValue;
                 question.question_text = xmlQList[i]
                     .getElementsByTagName("questiontext")[0]
