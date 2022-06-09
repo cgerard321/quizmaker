@@ -16,8 +16,10 @@ export default function ExportAllMoodleButton(props) {
     };
 
     useEffect(() => {
-        if (xmlfilename != "")
+        if (xmlfilename != "") {
             exportXMLFile(xmlfilename, props.treeData);
+            setXmlFileName("");
+        }
     }, [xmlfilename]);
 
 

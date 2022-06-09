@@ -22,16 +22,17 @@ const QuestionBankSection = (props) => {
                 direction="row"
                 justifyContent="flex-start"
                 alignItems="flex-start">
-                <UploadButton setFile={props.setFile} setFileObject={props.setFileObject} setUploadedXMLFileName={setUploadedXMLFileName}/>
-                <ExportAllMoodleButton treeData={treeData} uploadedXMLFileName={uploadedXMLFileName}/>
+                <UploadButton setFile={props.setFile} setFileObject={props.setFileObject} setUploadedXMLFileName={setUploadedXMLFileName} />
+                <ExportAllMoodleButton treeData={treeData} uploadedXMLFileName={uploadedXMLFileName} />
             </Stack>
-            <QBTree
+            {uploadedXMLFileName != "" && <QBTree
                 file={props.file}
                 selectedNode={props.selectedNode}
                 setSelectedNode={props.setSelectedNode}
                 treeData={treeData}
                 setTreeData={setTreeData}
             />
+            }
         </Fragment>
     );
 };
