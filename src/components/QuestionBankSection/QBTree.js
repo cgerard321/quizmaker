@@ -214,18 +214,31 @@ const QBTree = (props) => {
     };
 
     const getParentCategoryKey = (question, questionbank) => {
-        let parentCat = question.category.replace(question.name, "");
-        //console.log('last char is: ' + parentCat.charAt(parentCat.length - 1));
-        if (parentCat.charAt(parentCat.length - 1) === "/") {
-            //console.log("last char is a /");
-            parentCat = parentCat.slice(0, parentCat.length - 1);
+        console.log("Question category is: " + question.category);
+        let parentCat;
+        if (question.type === "category") {
+            parentCat = question.category.replace(question.name, "");
+
+            console.log('last char is: ' + parentCat.charAt(parentCat.length - 1));
+            
+            if (parentCat.charAt(parentCat.length - 1) === "/") {
+                console.log("last char is a /");
+                parentCat = parentCat.slice(0, parentCat.length - 1);
+            }
+            parentCat.trim();
+
+        } else {
+            parentCat = question.category;
         }
-        parentCat.trim();
-        // console.log("Question Name: " + question.name);
-        // console.log("Question Category: " + question.category);
-        // console.log("Parent category: " + parentCat);
+
+
         let parentKey = getDumCatKey(parentCat, questionbank);
-        // console.log('ParentKey is: ' + parentKey);
+        if (parentKey === -1) {
+            console.log("No parent key found");
+            console.log(question);
+            console.log("Parent category: " + parentCat);
+        }
+
         return parentKey;
     };
 
@@ -243,6 +256,10 @@ const QBTree = (props) => {
                     question: questionbank[i],
                 },
             };
+            // if (data.parent === -1) {
+            //     console.log(`Questionbank[${i}] is: `);
+            //     console.log(questionbank[i]);
+            // }
             myTreeData.push(data);
         }
 
