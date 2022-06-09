@@ -7,15 +7,21 @@ export function exportXMLFile(fileName, treeData) {
         return;
     }
 
-    let current_file = ""; //see if there's a way to keep the file that was open as a default.
+    let current_file = ""; 
 
     if (fileName === "") {
         current_file = "default.xml"
     }
 
     else {
-        current_file = fileName + ".xml";
+        ext = (fileName.lastIndexOf(".") - 1 >>> 0) + 2;
+        if (ext === "xml") {
+            current_file = fileName
+        } else {
+            current_file = fileName + ".xml";
+        }
     }
+
     let cat = "";
     let xml = '<?xml version="1.0" encoding="UTF-8"?>\n' + '<quiz>\n';
 
@@ -33,7 +39,7 @@ export function exportXMLFile(fileName, treeData) {
             xml += '<question type="category">\n<category>\n<text>' + q.category + '</text>\n</category>\n</question>';
             cat = q.category;
         }
-        
+
         xml += '<question type="' + q.type + '">\n' +
             '<name>\n<text>' + q.name + '</text>\n</name>\n' +
             '<questiontext format="html">\n<text><';
