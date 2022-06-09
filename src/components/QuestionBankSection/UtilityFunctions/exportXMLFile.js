@@ -14,7 +14,7 @@ export function exportXMLFile(fileName, treeData) {
     }
 
     else {
-        ext = (fileName.lastIndexOf(".") - 1 >>> 0) + 2;
+        let ext = (fileName.lastIndexOf(".") - 1 >>> 0) + 2;
         if (ext === "xml") {
             current_file = fileName
         } else {
